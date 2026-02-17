@@ -8,7 +8,7 @@ using Bentley.DgnPlatformNET.Elements;
 using Bentley.GeometryNET;
 using Bentley.MstnPlatformNET;
 using BDPnet = Bentley.DgnPlatformNET;
-using GC_OpenRoads.Models;
+using GC_OpenRoads_CrossSections.Models;
 using GC_OpenRoads.Utilities;
 
 namespace GC_OpenRoads.Nodes

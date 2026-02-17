@@ -235,12 +235,6 @@ namespace GC_OpenRoads.Nodes
     [GCParameter("ColumnSpacingMultiplier", "Multiplier for horizontal spacing: (Left+Right width)*multiplier. Default 1.5.")]
     [GCParameter("RowSpacing", "Vertical spacing between rows (sheet units). If <= 0, auto per column.")]
     // Per-section outputs (replicated to match Sections[])
-    [GCParameter("DesignProfilePoints", "Polyline through the design points (sheet space) per section.")]
-    [GCParameter("ExistingProfilePoints", "Polyline through existing ground points per section (empty if none).")]
-    [GCParameter("DatumLinePoints", "Two points defining the horizontal datum line per section (or empty).")]
-    [GCParameter("TickMarkPoints", "Paired points (base, tip) for each feature point tick per section.")]
-    [GCParameter("DropLinePoints", "Paired points (feature Y, datum Y) for drop lines per section.")]
-    [GCParameter("ColumnCentreX", "Per-section X centre of each feature point column — feed to ORAnnotationBand.")]
     [GCParameter("AnnotationBandTopY", "Per-section Y of the top edge of the annotation band — feed to ORAnnotationBand.")]
     [GCParameter("ProfileLeftX", "Per-section X of leftmost feature point.")]
     [GCParameter("ProfileRightX", "Per-section X of rightmost feature point.")]
@@ -274,12 +268,13 @@ namespace GC_OpenRoads.Nodes
     [GCIn] double RowSpacing,
 
     // Replicated (one element per section)
-    [GCOut, GCReplicatable, GCInitiallyPinned] ref DPoint3d[][] DesignProfilePoints,
-    [GCOut, GCReplicatable, GCInitiallyPinned] ref DPoint3d[][] ExistingProfilePoints,
-    [GCOut, GCReplicatable, GCInitiallyPinned] ref DPoint3d[][] DatumLinePoints,
-    [GCOut, GCReplicatable, GCInitiallyPinned] ref DPoint3d[][] TickMarkPoints,
-    [GCOut, GCReplicatable, GCInitiallyPinned] ref DPoint3d[][] DropLinePoints,
-    [GCOut, GCReplicatable, GCInitiallyPinned] ref double[][] ColumnCentreX,
+    // Note: DPoint3d[][] and double[][] are computed internally; only flat arrays are GC outputs.
+    ref DPoint3d[][] DesignProfilePoints,
+    ref DPoint3d[][] ExistingProfilePoints,
+    ref DPoint3d[][] DatumLinePoints,
+    ref DPoint3d[][] TickMarkPoints,
+    ref DPoint3d[][] DropLinePoints,
+    ref double[][] ColumnCentreX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] AnnotationBandTopY,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileLeftX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileRightX,
@@ -648,7 +643,6 @@ namespace GC_OpenRoads.Nodes
     [GCParameter("DrawVerticalDropLines", "Include vertical drop lines from each feature point to its datum.")]
     // Per-section outputs (replicated to match Sections[])
     [GCParameter("AnnotationBandTopY", "Per-section Y of the top edge of the annotation band (feed to ORAnnotationBand).")]
-    [GCParameter("ColumnCentreX", "Per-section X centre for each feature point column (feed to ORAnnotationBand).")]
     [GCParameter("ProfileLeftX", "Per-section X of the leftmost feature point.")]
     [GCParameter("ProfileRightX", "Per-section X of the rightmost feature point.")]
     [GCParameter("ProfileWidth", "Per-section total profile width in sheet units.")]
@@ -681,8 +675,8 @@ namespace GC_OpenRoads.Nodes
     [GCIn] bool DrawVerticalDropLines,
 
     // Per-section outputs
+    // Note: double[][] ColumnCentreX is computed internally; not exposed as a GC output.
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] AnnotationBandTopY,
-    [GCOut, GCReplicatable, GCInitiallyPinned] ref double[][] ColumnCentreX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileLeftX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileRightX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileWidth,
@@ -835,7 +829,6 @@ namespace GC_OpenRoads.Nodes
 
             // Return outputs to GC (for downstream nodes like ORAnnotationBand)
             AnnotationBandTopY = annTopY;
-            ColumnCentreX = colCentres;
             ProfileLeftX = leftX;
             ProfileRightX = rightX;
             ProfileWidth = profWidth;
