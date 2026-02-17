@@ -235,7 +235,7 @@ namespace GC_OpenRoads.Nodes
     [GCParameter("ColumnSpacingMultiplier", "Multiplier for horizontal spacing: (Left+Right width)*multiplier. Default 1.5.")]
     [GCParameter("RowSpacing", "Vertical spacing between rows (sheet units). If <= 0, auto per column.")]
     // Per-section outputs (replicated to match Sections[])
-    [GCParameter("ColumnCentreX",      "Per-section X centres of each feature column, CSV-encoded (e.g. '10.5,20.3'). Wire to ORAnnotationBand.ColumnCentreXEncoded.")]
+    [GCParameter("ColumnCentreX",      "Per-section X centres of each feature column (IGCObject[][]). Wire to ORAnnotationBand.ColumnCentreXGC.")]
     [GCParameter("AnnotationBandTopY", "Per-section Y of the top edge of the annotation band — feed to ORAnnotationBand.")]
     [GCParameter("ProfileLeftX", "Per-section X of leftmost feature point.")]
     [GCParameter("ProfileRightX", "Per-section X of rightmost feature point.")]
@@ -274,7 +274,7 @@ namespace GC_OpenRoads.Nodes
     ref DPoint3d[][] DatumLinePoints,
     ref DPoint3d[][] TickMarkPoints,
     ref DPoint3d[][] DropLinePoints,
-    [GCOut, GCReplicatable, GCInitiallyPinned] ref string[] ColumnCentreX,
+    [GCOut, GCReplicatable, GCInitiallyPinned] ref IGCObject[][] ColumnCentreX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] AnnotationBandTopY,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileLeftX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileRightX,
@@ -510,7 +510,8 @@ namespace GC_OpenRoads.Nodes
             DatumLinePoints = outDatum;
             TickMarkPoints = outTicks;
             DropLinePoints = outDrops;
-            ColumnCentreX = outCols.Select(c => string.Join(",", c.Select(v => v.ToString("R")))).ToArray();
+            Boxer boxer = GCEnvironment().Boxer;
+            ColumnCentreX = outCols.Select(c => c.Select(v => boxer.BoxToCompatible(v)).ToArray()).ToArray();
             AnnotationBandTopY = outAnnTop;
             ProfileLeftX = outLeftX;
             ProfileRightX = outRightX;
@@ -642,7 +643,7 @@ namespace GC_OpenRoads.Nodes
     [GCParameter("DrawDatumLine", "Include a horizontal datum line at the reference elevation for each section.")]
     [GCParameter("DrawVerticalDropLines", "Include vertical drop lines from each feature point to its datum.")]
     // Per-section outputs (replicated to match Sections[])
-    [GCParameter("ColumnCentreX",      "Per-section X centres of each feature column, CSV-encoded. Wire to ORAnnotationBand.ColumnCentreXEncoded.")]
+    [GCParameter("ColumnCentreX",      "Per-section X centres of each feature column (IGCObject[][]). Wire to ORAnnotationBand.ColumnCentreXGC.")]
     [GCParameter("AnnotationBandTopY", "Per-section Y of the top edge of the annotation band (feed to ORAnnotationBand).")]
     [GCParameter("ProfileLeftX", "Per-section X of the leftmost feature point.")]
     [GCParameter("ProfileRightX", "Per-section X of the rightmost feature point.")]
@@ -675,8 +676,8 @@ namespace GC_OpenRoads.Nodes
     [GCIn] bool DrawDatumLine,
     [GCIn] bool DrawVerticalDropLines,
 
-    // Per-section outputs (double[][] not a valid GC type → CSV-encode as string[] instead)
-    [GCOut, GCReplicatable, GCInitiallyPinned] ref string[] ColumnCentreX,
+    // Per-section outputs
+    [GCOut, GCReplicatable, GCInitiallyPinned] ref IGCObject[][] ColumnCentreX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] AnnotationBandTopY,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileLeftX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileRightX,
@@ -708,7 +709,7 @@ namespace GC_OpenRoads.Nodes
             DPoint3d[][] datumPts = Array.Empty<DPoint3d[]>();
             DPoint3d[][] tickPts = Array.Empty<DPoint3d[]>();
             DPoint3d[][] dropPts = Array.Empty<DPoint3d[]>();
-            string[] colCentres = Array.Empty<string>();
+            IGCObject[][] colCentres = Array.Empty<IGCObject[]>();
             double[] annTopY = Array.Empty<double>();
             double[] leftX = Array.Empty<double>();
             double[] rightX = Array.Empty<double>();

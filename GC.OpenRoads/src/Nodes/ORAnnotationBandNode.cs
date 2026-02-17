@@ -74,7 +74,7 @@ namespace GC_OpenRoads.Nodes
                    "Use TotalBandHeight output to set AnnotationBandHeight in the layout node.")]
         [GCParameter("SectionData",            "Cross-section data for this section.")]
         [GCParameter("ColumnCentreX",          "Sheet X centre of each column — from single-section Build2DProfile.ColumnCentreX (double[]).")]
-        [GCParameter("ColumnCentreXEncoded",   "CSV-encoded column centres from multi-section Build2DProfiles/PlaceMultipleInDgn.ColumnCentreX. When set, overrides ColumnCentreX.")]
+        [GCParameter("ColumnCentreXGC",        "GC-boxed column centres from multi-section Build2DProfiles/PlaceMultipleInDgn.ColumnCentreX (IGCObject[]). When set, overrides ColumnCentreX.")]
         [GCParameter("BandTopY",               "Y of the top edge of the band — from ORCrossSectionGeometry.AnnotationBandTopY.")]
         [GCParameter("BandLeftX",         "X of left edge of data area — from ORCrossSectionGeometry.ProfileLeftX.")]
         [GCParameter("BandRightX",        "X of right edge of data area — from ORCrossSectionGeometry.ProfileRightX.")]
@@ -97,7 +97,7 @@ namespace GC_OpenRoads.Nodes
             NodeUpdateContext updateContext,
             [GCIn]  CrossSectionData SectionData,
             [GCIn]  double[]         ColumnCentreX,
-            [GCIn]  string           ColumnCentreXEncoded,
+            [GCIn]  IGCObject[]      ColumnCentreXGC,
             [GCIn]  double           BandTopY,
             [GCIn]  double           BandLeftX,
             [GCIn]  double           BandRightX,
@@ -119,7 +119,7 @@ namespace GC_OpenRoads.Nodes
         {
             try
             {
-                var colX = DecodeColumnCentres(ColumnCentreXEncoded, ColumnCentreX);
+                var colX = UnboxColumnCentres(ColumnCentreXGC, ColumnCentreX);
                 var valid = ValidateInputs(SectionData, colX, ExtraRowKeys, ExtraRowLabels);
                 if (valid != NodeUpdateResult.Success) return valid;
 
@@ -151,7 +151,7 @@ namespace GC_OpenRoads.Nodes
                    "into the active DGN model.")]
         [GCParameter("SectionData",            "Cross-section data for this section.")]
         [GCParameter("ColumnCentreX",          "Sheet X centre of each column — from single-section Build2DProfile.ColumnCentreX (double[]).")]
-        [GCParameter("ColumnCentreXEncoded",   "CSV-encoded column centres from multi-section techniques. When set, overrides ColumnCentreX.")]
+        [GCParameter("ColumnCentreXGC",        "GC-boxed column centres from multi-section techniques (IGCObject[]). When set, overrides ColumnCentreX.")]
         [GCParameter("BandTopY",               "Y of the top edge of the band.")]
         [GCParameter("BandLeftX",         "X of left edge of data area.")]
         [GCParameter("BandRightX",        "X of right edge of data area.")]
@@ -178,7 +178,7 @@ namespace GC_OpenRoads.Nodes
             NodeUpdateContext updateContext,
             [GCIn]  CrossSectionData SectionData,
             [GCIn]  double[]         ColumnCentreX,
-            [GCIn]  string           ColumnCentreXEncoded,
+            [GCIn]  IGCObject[]      ColumnCentreXGC,
             [GCIn]  double           BandTopY,
             [GCIn]  double           BandLeftX,
             [GCIn]  double           BandRightX,
@@ -204,7 +204,7 @@ namespace GC_OpenRoads.Nodes
         {
             try
             {
-                var colX  = DecodeColumnCentres(ColumnCentreXEncoded, ColumnCentreX);
+                var colX  = UnboxColumnCentres(ColumnCentreXGC, ColumnCentreX);
                 var valid = ValidateInputs(SectionData, colX, ExtraRowKeys, ExtraRowLabels);
                 if (valid != NodeUpdateResult.Success) return valid;
 
@@ -291,17 +291,12 @@ namespace GC_OpenRoads.Nodes
         //  PRIVATE HELPERS
         // =====================================================================
 
-        /// <summary>
-        /// If <paramref name="encoded"/> is a non-empty CSV string (from multi-section techniques),
-        /// parse it into a double[].  Otherwise return <paramref name="fallback"/> as-is.
-        /// </summary>
-        private static double[] DecodeColumnCentres(string encoded, double[] fallback)
+        private double[] UnboxColumnCentres(IGCObject[] gcArr, double[] fallback)
         {
-            if (string.IsNullOrWhiteSpace(encoded))
+            if (gcArr == null || gcArr.Length == 0)
                 return fallback ?? Array.Empty<double>();
-            return encoded.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                          .Select(s => double.Parse(s.Trim(), System.Globalization.CultureInfo.InvariantCulture))
-                          .ToArray();
+            Unboxer unboxer = GCEnvironment().Unboxer;
+            return gcArr.Select(o => unboxer.Unbox<double>(o)).ToArray();
         }
 
         private static NodeUpdateResult ValidateInputs(
