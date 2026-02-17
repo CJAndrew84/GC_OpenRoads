@@ -72,9 +72,10 @@ namespace GC_OpenRoads.Nodes
         [GCDefaultTechnique]
         [GCSummary("Computes annotation band row/column geometry. No DGN writes. " +
                    "Use TotalBandHeight output to set AnnotationBandHeight in the layout node.")]
-        [GCParameter("SectionData",       "Cross-section data for this section.")]
-        [GCParameter("ColumnCentreX",     "Sheet X centre of each column — from ORCrossSectionGeometry.ColumnCentreX.")]
-        [GCParameter("BandTopY",          "Y of the top edge of the band — from ORCrossSectionGeometry.AnnotationBandTopY.")]
+        [GCParameter("SectionData",            "Cross-section data for this section.")]
+        [GCParameter("ColumnCentreX",          "Sheet X centre of each column — from single-section Build2DProfile.ColumnCentreX (double[]).")]
+        [GCParameter("ColumnCentreXEncoded",   "CSV-encoded column centres from multi-section Build2DProfiles/PlaceMultipleInDgn.ColumnCentreX. When set, overrides ColumnCentreX.")]
+        [GCParameter("BandTopY",               "Y of the top edge of the band — from ORCrossSectionGeometry.AnnotationBandTopY.")]
         [GCParameter("BandLeftX",         "X of left edge of data area — from ORCrossSectionGeometry.ProfileLeftX.")]
         [GCParameter("BandRightX",        "X of right edge of data area — from ORCrossSectionGeometry.ProfileRightX.")]
         [GCParameter("RowHeight",         "Height of each row in sheet master units. Default 5.")]
@@ -96,6 +97,7 @@ namespace GC_OpenRoads.Nodes
             NodeUpdateContext updateContext,
             [GCIn]  CrossSectionData SectionData,
             [GCIn]  double[]         ColumnCentreX,
+            [GCIn]  string           ColumnCentreXEncoded,
             [GCIn]  double           BandTopY,
             [GCIn]  double           BandLeftX,
             [GCIn]  double           BandRightX,
@@ -117,7 +119,8 @@ namespace GC_OpenRoads.Nodes
         {
             try
             {
-                var valid = ValidateInputs(SectionData, ColumnCentreX, ExtraRowKeys, ExtraRowLabels);
+                var colX = DecodeColumnCentres(ColumnCentreXEncoded, ColumnCentreX);
+                var valid = ValidateInputs(SectionData, colX, ExtraRowKeys, ExtraRowLabels);
                 if (valid != NodeUpdateResult.Success) return valid;
 
                 double rh  = RowHeight > 0 ? RowHeight : 5.0;
@@ -146,9 +149,10 @@ namespace GC_OpenRoads.Nodes
         [GCTechnique]
         [GCSummary("Computes the annotation band and places border lines, dividers, and text " +
                    "into the active DGN model.")]
-        [GCParameter("SectionData",       "Cross-section data for this section.")]
-        [GCParameter("ColumnCentreX",     "Sheet X centre of each column.")]
-        [GCParameter("BandTopY",          "Y of the top edge of the band.")]
+        [GCParameter("SectionData",            "Cross-section data for this section.")]
+        [GCParameter("ColumnCentreX",          "Sheet X centre of each column — from single-section Build2DProfile.ColumnCentreX (double[]).")]
+        [GCParameter("ColumnCentreXEncoded",   "CSV-encoded column centres from multi-section techniques. When set, overrides ColumnCentreX.")]
+        [GCParameter("BandTopY",               "Y of the top edge of the band.")]
         [GCParameter("BandLeftX",         "X of left edge of data area.")]
         [GCParameter("BandRightX",        "X of right edge of data area.")]
         [GCParameter("RowHeight",         "Row height (master units).")]
@@ -174,6 +178,7 @@ namespace GC_OpenRoads.Nodes
             NodeUpdateContext updateContext,
             [GCIn]  CrossSectionData SectionData,
             [GCIn]  double[]         ColumnCentreX,
+            [GCIn]  string           ColumnCentreXEncoded,
             [GCIn]  double           BandTopY,
             [GCIn]  double           BandLeftX,
             [GCIn]  double           BandRightX,
@@ -199,7 +204,8 @@ namespace GC_OpenRoads.Nodes
         {
             try
             {
-                var valid = ValidateInputs(SectionData, ColumnCentreX, ExtraRowKeys, ExtraRowLabels);
+                var colX  = DecodeColumnCentres(ColumnCentreXEncoded, ColumnCentreX);
+                var valid = ValidateInputs(SectionData, colX, ExtraRowKeys, ExtraRowLabels);
                 if (valid != NodeUpdateResult.Success) return valid;
 
                 double rh  = RowHeight > 0 ? RowHeight : 5.0;
@@ -216,8 +222,8 @@ namespace GC_OpenRoads.Nodes
 
                 // ── Column divider X positions ────────────────────────────────
                 var colDivX = new List<double> { BandLeftX };
-                for (int c = 0; c < ColumnCentreX.Length - 1; c++)
-                    colDivX.Add(0.5 * (ColumnCentreX[c] + ColumnCentreX[c + 1]));
+                for (int c = 0; c < colX.Length - 1; c++)
+                    colDivX.Add(0.5 * (colX[c] + colX[c + 1]));
                 colDivX.Add(BandRightX);
 
                 double boxLeft   = BandLeftX - lcw;
@@ -284,6 +290,19 @@ namespace GC_OpenRoads.Nodes
         // =====================================================================
         //  PRIVATE HELPERS
         // =====================================================================
+
+        /// <summary>
+        /// If <paramref name="encoded"/> is a non-empty CSV string (from multi-section techniques),
+        /// parse it into a double[].  Otherwise return <paramref name="fallback"/> as-is.
+        /// </summary>
+        private static double[] DecodeColumnCentres(string encoded, double[] fallback)
+        {
+            if (string.IsNullOrWhiteSpace(encoded))
+                return fallback ?? Array.Empty<double>();
+            return encoded.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                          .Select(s => double.Parse(s.Trim(), System.Globalization.CultureInfo.InvariantCulture))
+                          .ToArray();
+        }
 
         private static NodeUpdateResult ValidateInputs(
             CrossSectionData data, double[] colX, string extraKeys, string extraLabels)

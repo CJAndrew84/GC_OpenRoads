@@ -235,6 +235,7 @@ namespace GC_OpenRoads.Nodes
     [GCParameter("ColumnSpacingMultiplier", "Multiplier for horizontal spacing: (Left+Right width)*multiplier. Default 1.5.")]
     [GCParameter("RowSpacing", "Vertical spacing between rows (sheet units). If <= 0, auto per column.")]
     // Per-section outputs (replicated to match Sections[])
+    [GCParameter("ColumnCentreX",      "Per-section X centres of each feature column, CSV-encoded (e.g. '10.5,20.3'). Wire to ORAnnotationBand.ColumnCentreXEncoded.")]
     [GCParameter("AnnotationBandTopY", "Per-section Y of the top edge of the annotation band — feed to ORAnnotationBand.")]
     [GCParameter("ProfileLeftX", "Per-section X of leftmost feature point.")]
     [GCParameter("ProfileRightX", "Per-section X of rightmost feature point.")]
@@ -267,14 +268,13 @@ namespace GC_OpenRoads.Nodes
     [GCIn] double ColumnSpacingMultiplier,
     [GCIn] double RowSpacing,
 
-    // Replicated (one element per section)
-    // Note: DPoint3d[][] and double[][] are computed internally; only flat arrays are GC outputs.
+    // Note: DPoint3d[][] are computed internally and not exposed as GC outputs (jagged arrays unsupported).
     ref DPoint3d[][] DesignProfilePoints,
     ref DPoint3d[][] ExistingProfilePoints,
     ref DPoint3d[][] DatumLinePoints,
     ref DPoint3d[][] TickMarkPoints,
     ref DPoint3d[][] DropLinePoints,
-    ref double[][] ColumnCentreX,
+    [GCOut, GCReplicatable, GCInitiallyPinned] ref string[] ColumnCentreX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] AnnotationBandTopY,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileLeftX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileRightX,
@@ -510,7 +510,7 @@ namespace GC_OpenRoads.Nodes
             DatumLinePoints = outDatum;
             TickMarkPoints = outTicks;
             DropLinePoints = outDrops;
-            ColumnCentreX = outCols;
+            ColumnCentreX = outCols.Select(c => string.Join(",", c.Select(v => v.ToString("R")))).ToArray();
             AnnotationBandTopY = outAnnTop;
             ProfileLeftX = outLeftX;
             ProfileRightX = outRightX;
@@ -642,6 +642,7 @@ namespace GC_OpenRoads.Nodes
     [GCParameter("DrawDatumLine", "Include a horizontal datum line at the reference elevation for each section.")]
     [GCParameter("DrawVerticalDropLines", "Include vertical drop lines from each feature point to its datum.")]
     // Per-section outputs (replicated to match Sections[])
+    [GCParameter("ColumnCentreX",      "Per-section X centres of each feature column, CSV-encoded. Wire to ORAnnotationBand.ColumnCentreXEncoded.")]
     [GCParameter("AnnotationBandTopY", "Per-section Y of the top edge of the annotation band (feed to ORAnnotationBand).")]
     [GCParameter("ProfileLeftX", "Per-section X of the leftmost feature point.")]
     [GCParameter("ProfileRightX", "Per-section X of the rightmost feature point.")]
@@ -674,8 +675,8 @@ namespace GC_OpenRoads.Nodes
     [GCIn] bool DrawDatumLine,
     [GCIn] bool DrawVerticalDropLines,
 
-    // Per-section outputs
-    // Note: double[][] ColumnCentreX is computed internally; not exposed as a GC output.
+    // Per-section outputs (double[][] not a valid GC type → CSV-encode as string[] instead)
+    [GCOut, GCReplicatable, GCInitiallyPinned] ref string[] ColumnCentreX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] AnnotationBandTopY,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileLeftX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileRightX,
@@ -707,7 +708,7 @@ namespace GC_OpenRoads.Nodes
             DPoint3d[][] datumPts = Array.Empty<DPoint3d[]>();
             DPoint3d[][] tickPts = Array.Empty<DPoint3d[]>();
             DPoint3d[][] dropPts = Array.Empty<DPoint3d[]>();
-            double[][] colCentres = Array.Empty<double[]>();
+            string[] colCentres = Array.Empty<string>();
             double[] annTopY = Array.Empty<double>();
             double[] leftX = Array.Empty<double>();
             double[] rightX = Array.Empty<double>();
@@ -828,6 +829,7 @@ namespace GC_OpenRoads.Nodes
             }
 
             // Return outputs to GC (for downstream nodes like ORAnnotationBand)
+            ColumnCentreX = colCentres;
             AnnotationBandTopY = annTopY;
             ProfileLeftX = leftX;
             ProfileRightX = rightX;
