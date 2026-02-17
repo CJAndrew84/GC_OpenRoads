@@ -1,0 +1,157 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Repos\\GC_OpenRoads\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|c:\\repos\\gc_openroads\\gc.openroads\\src\\nodes\\orcrosssectiongeometrynode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|solutionrelative:gc.openroads\\src\\nodes\\orcrosssectiongeometrynode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|C:\\Repos\\GC_OpenRoads\\gc.openroads\\src\\nodes\\orcrosssectionsheetlayoutnode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|solutionrelative:gc.openroads\\src\\nodes\\orcrosssectionsheetlayoutnode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|c:\\repos\\gc_openroads\\gc.openroads\\src\\utilities\\openroadshelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|solutionrelative:gc.openroads\\src\\utilities\\openroadshelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|C:\\Repos\\GC_OpenRoads\\gc.openroads\\src\\nodes\\orcrosssectiondatanode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|solutionrelative:gc.openroads\\src\\nodes\\orcrosssectiondatanode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|C:\\Repos\\GC_OpenRoads\\gc.openroads\\src\\nodes\\orcorridornode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|solutionrelative:gc.openroads\\src\\nodes\\orcorridornode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|C:\\Repos\\GC_OpenRoads\\gc.openroads\\src\\nodes\\oralignmentnode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|solutionrelative:gc.openroads\\src\\nodes\\oralignmentnode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|C:\\Repos\\GC_OpenRoads\\gc.openroads\\src\\nodes\\orannotationbandnode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|solutionrelative:gc.openroads\\src\\nodes\\orannotationbandnode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|C:\\Repos\\GC_OpenRoads\\gc.openroads\\src\\models\\crosssectionmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04318D68-0148-4555-B96B-5801016D4708}|GC.OpenRoads\\GC.OpenRoads.csproj|solutionrelative:gc.openroads\\src\\models\\crosssectionmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ORCrossSectionGeometryNode.cs",
+              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORCrossSectionGeometryNode.cs",
+              "RelativeDocumentMoniker": "GC.OpenRoads\\src\\Nodes\\ORCrossSectionGeometryNode.cs",
+              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORCrossSectionGeometryNode.cs",
+              "RelativeToolTip": "GC.OpenRoads\\src\\Nodes\\ORCrossSectionGeometryNode.cs",
+              "ViewState": "AgIAADwDAAAAAAAAAADwv14DAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T14:56:47.532Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "OpenRoadsHelper.cs",
+              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Utilities\\OpenRoadsHelper.cs",
+              "RelativeDocumentMoniker": "GC.OpenRoads\\src\\Utilities\\OpenRoadsHelper.cs",
+              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Utilities\\OpenRoadsHelper.cs",
+              "RelativeToolTip": "GC.OpenRoads\\src\\Utilities\\OpenRoadsHelper.cs",
+              "ViewState": "AgIAAM4AAAAAAAAAAAArwOQAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:08:34.951Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ORAlignmentNode.cs",
+              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORAlignmentNode.cs",
+              "RelativeDocumentMoniker": "GC.OpenRoads\\src\\Nodes\\ORAlignmentNode.cs",
+              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORAlignmentNode.cs",
+              "RelativeToolTip": "GC.OpenRoads\\src\\Nodes\\ORAlignmentNode.cs",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAYwDYAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:10:36.108Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ORCorridorNode.cs",
+              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORCorridorNode.cs",
+              "RelativeDocumentMoniker": "GC.OpenRoads\\src\\Nodes\\ORCorridorNode.cs",
+              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORCorridorNode.cs",
+              "RelativeToolTip": "GC.OpenRoads\\src\\Nodes\\ORCorridorNode.cs",
+              "ViewState": "AgIAADQAAAAAAAAAAAArwE0AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:15:27.651Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ORCrossSectionDataNode.cs",
+              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORCrossSectionDataNode.cs",
+              "RelativeDocumentMoniker": "GC.OpenRoads\\src\\Nodes\\ORCrossSectionDataNode.cs",
+              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORCrossSectionDataNode.cs",
+              "RelativeToolTip": "GC.OpenRoads\\src\\Nodes\\ORCrossSectionDataNode.cs",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAWwGQAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:13:19.902Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ORAnnotationBandNode.cs",
+              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORAnnotationBandNode.cs",
+              "RelativeDocumentMoniker": "GC.OpenRoads\\src\\Nodes\\ORAnnotationBandNode.cs",
+              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORAnnotationBandNode.cs",
+              "RelativeToolTip": "GC.OpenRoads\\src\\Nodes\\ORAnnotationBandNode.cs",
+              "ViewState": "AgIAAJMBAAAAAAAAAAAcwKEBAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:15:12.12Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ORCrossSectionSheetLayoutNode.cs",
+              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORCrossSectionSheetLayoutNode.cs",
+              "RelativeDocumentMoniker": "GC.OpenRoads\\src\\Nodes\\ORCrossSectionSheetLayoutNode.cs",
+              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Nodes\\ORCrossSectionSheetLayoutNode.cs",
+              "RelativeToolTip": "GC.OpenRoads\\src\\Nodes\\ORCrossSectionSheetLayoutNode.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:10:59.53Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CrossSectionModels.cs",
+              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Models\\CrossSectionModels.cs",
+              "RelativeDocumentMoniker": "GC.OpenRoads\\src\\Models\\CrossSectionModels.cs",
+              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GC.OpenRoads\\src\\Models\\CrossSectionModels.cs",
+              "RelativeToolTip": "GC.OpenRoads\\src\\Models\\CrossSectionModels.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:01:29.228Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

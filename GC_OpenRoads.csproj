@@ -1,0 +1,124 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <AssemblyName>GC_OpenRoads</AssemblyName>
+    <RootNamespace>GC_OpenRoads</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <PlatformTarget>x64</PlatformTarget>
+    <Version>2.0.0</Version>
+    <Description>GC addon for OpenRoads cross-section drawing production — corrected GC API</Description>
+  </PropertyGroup>
+
+  <!-- ============================================================
+       Adjust these paths to match your installation.
+       ============================================================ -->
+  <PropertyGroup>
+    <ORDInstallDir Condition="'$(ORDInstallDir)'==''">C:\Program Files\Bentley\OpenRoads Designer 2024.00\OpenRoadsDesigner\</ORDInstallDir>
+    <GCInstallDir Condition="'$(GCInstallDir)'==''">C:\Program Files\Bentley\OpenBuildings GenerativeComponents 2024\GenerativeComponents\</GCInstallDir>
+  </PropertyGroup>
+
+  <!-- ── MicroStation / DgnPlatform ───────────────────────────── -->
+  <ItemGroup>
+    <Reference Include="Bentley.CifNET.GeometryModel.SDK.4.0">
+      <HintPath>..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Cif\Bentley.CifNET.GeometryModel.SDK.4.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.CifNET.GeometryModel.SDK.Edit.4.0">
+      <HintPath>..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Cif\Bentley.CifNET.GeometryModel.SDK.Edit.4.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.CifNET.LinearGeometry.4.0">
+      <HintPath>..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Cif\Bentley.CifNET.LinearGeometry.4.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.CifNET.SDK.4.0">
+      <HintPath>..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Cif\Bentley.CifNET.SDK.4.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.CifNET.SDK.Edit.4.0">
+      <HintPath>..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Cif\Bentley.CifNET.SDK.Edit.4.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.DgnPlatformNET">
+      <HintPath>$(ORDInstallDir)Bentley.DgnPlatformNET.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Bentley.DgnDisplayNet">
+      <HintPath>$(ORDInstallDir)Bentley.DgnDisplayNet.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Bentley.MstnPlatformNET">
+      <HintPath>$(ORDInstallDir)Bentley.MstnPlatformNET.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Bentley.GeometryNET">
+      <HintPath>$(ORDInstallDir)Bentley.GeometryNET.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- ── GenerativeComponents API ─────────────────────────────── -->
+  <!--
+    The key GC assemblies. These ship with GC or the GC SDK sample add-in.
+    GC discovers nodes by scanning for GeometricNode subclasses — no
+    manual registration required, unlike the (incorrect) v1 approach.
+  -->
+  <ItemGroup>
+    <Reference Include="Bentley.GenerativeComponents">
+      <HintPath>$(GCInstallDir)Bentley.GenerativeComponents.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents.ElementBasedNodes">
+      <HintPath>$(GCInstallDir)Bentley.GenerativeComponents.ElementBasedNodes.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents.AddInSupport">
+      <HintPath>$(GCInstallDir)Bentley.GenerativeComponents.AddInSupport.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents.GCScript">
+      <HintPath>$(GCInstallDir)Bentley.GenerativeComponents.GCScript.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents.GeneralPurpose">
+      <HintPath>$(GCInstallDir)Bentley.GenerativeComponents.GeneralPurpose.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- ── CifNET / OpenRoads SDK ───────────────────────────────── -->
+  <ItemGroup>
+    <Reference Include="Bentley.CifNET.SDK">
+      <HintPath>$(ORDInstallDir)Bentley.CifNET.SDK.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Bentley.CifNET.SDK.Edit">
+      <HintPath>$(ORDInstallDir)Bentley.CifNET.SDK.Edit.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Bentley.CifNET.GeometryModel.SDK">
+      <HintPath>$(ORDInstallDir)Bentley.CifNET.GeometryModel.SDK.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Bentley.CifNET.GeometryModel.SDK.Edit">
+      <HintPath>$(ORDInstallDir)Bentley.CifNET.GeometryModel.SDK.Edit.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Bentley.CifNET.LinearGeometry">
+      <HintPath>$(ORDInstallDir)Bentley.CifNET.LinearGeometry.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\OpenRoadsDesigner.exe</StartProgram>
+    <StartArguments>-wsGC=1</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ReferencePath>C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\;C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Assemblies\;C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Cif\;C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\;C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\</ReferencePath>
+  </PropertyGroup>
+</Project>

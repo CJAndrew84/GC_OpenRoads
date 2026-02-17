@@ -1,0 +1,7 @@
+C:\Repos\GC_OpenRoads\GC.OpenRoads\obj\Debug\GC.OpenRoads.csproj.AssemblyReference.cache
+C:\Repos\GC_OpenRoads\GC.OpenRoads\obj\Debug\GC.OpenRoads.csproj.CoreCompileInputs.cache
+C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\GC.OpenRoads.dll
+C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\GC.OpenRoads.pdb
+C:\Repos\GC_OpenRoads\GC.OpenRoads\obj\Debug\GC.OpenR.DB8A0C8B.Up2Date
+C:\Repos\GC_OpenRoads\GC.OpenRoads\obj\Debug\GC.OpenRoads.dll
+C:\Repos\GC_OpenRoads\GC.OpenRoads\obj\Debug\GC.OpenRoads.pdb
