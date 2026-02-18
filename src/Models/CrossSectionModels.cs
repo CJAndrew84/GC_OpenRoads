@@ -6,6 +6,9 @@
 //  also be serialised for reporting.
 // =============================================================================
 
+using System;
+using System.Collections.Generic;
+
 namespace GC_OpenRoads_CrossSections.Models
 {
     // -------------------------------------------------------------------------

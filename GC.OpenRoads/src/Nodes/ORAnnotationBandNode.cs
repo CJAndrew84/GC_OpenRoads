@@ -72,9 +72,10 @@ namespace GC_OpenRoads.Nodes
         [GCDefaultTechnique]
         [GCSummary("Computes annotation band row/column geometry. No DGN writes. " +
                    "Use TotalBandHeight output to set AnnotationBandHeight in the layout node.")]
-        [GCParameter("SectionData",       "Cross-section data for this section.")]
-        [GCParameter("ColumnCentreX",     "Sheet X centre of each column — from ORCrossSectionGeometry.ColumnCentreX.")]
-        [GCParameter("BandTopY",          "Y of the top edge of the band — from ORCrossSectionGeometry.AnnotationBandTopY.")]
+        [GCParameter("SectionData",            "Cross-section data for this section.")]
+        [GCParameter("ColumnCentreX",          "Sheet X centre of each column — from single-section Build2DProfile.ColumnCentreX (double[]).")]
+        [GCParameter("ColumnCentreXGC",        "GC-boxed column centres from multi-section Build2DProfiles/PlaceMultipleInDgn.ColumnCentreX (IGCObject[]). When set, overrides ColumnCentreX.")]
+        [GCParameter("BandTopY",               "Y of the top edge of the band — from ORCrossSectionGeometry.AnnotationBandTopY.")]
         [GCParameter("BandLeftX",         "X of left edge of data area — from ORCrossSectionGeometry.ProfileLeftX.")]
         [GCParameter("BandRightX",        "X of right edge of data area — from ORCrossSectionGeometry.ProfileRightX.")]
         [GCParameter("RowHeight",         "Height of each row in sheet master units. Default 5.")]
@@ -96,6 +97,7 @@ namespace GC_OpenRoads.Nodes
             NodeUpdateContext updateContext,
             [GCIn]  CrossSectionData SectionData,
             [GCIn]  double[]         ColumnCentreX,
+            [GCIn]  IGCObject[]      ColumnCentreXGC,
             [GCIn]  double           BandTopY,
             [GCIn]  double           BandLeftX,
             [GCIn]  double           BandRightX,
@@ -117,7 +119,8 @@ namespace GC_OpenRoads.Nodes
         {
             try
             {
-                var valid = ValidateInputs(SectionData, ColumnCentreX, ExtraRowKeys, ExtraRowLabels);
+                var colX = UnboxColumnCentres(ColumnCentreXGC, ColumnCentreX);
+                var valid = ValidateInputs(SectionData, colX, ExtraRowKeys, ExtraRowLabels);
                 if (valid != NodeUpdateResult.Success) return valid;
 
                 double rh  = RowHeight > 0 ? RowHeight : 5.0;
@@ -146,9 +149,10 @@ namespace GC_OpenRoads.Nodes
         [GCTechnique]
         [GCSummary("Computes the annotation band and places border lines, dividers, and text " +
                    "into the active DGN model.")]
-        [GCParameter("SectionData",       "Cross-section data for this section.")]
-        [GCParameter("ColumnCentreX",     "Sheet X centre of each column.")]
-        [GCParameter("BandTopY",          "Y of the top edge of the band.")]
+        [GCParameter("SectionData",            "Cross-section data for this section.")]
+        [GCParameter("ColumnCentreX",          "Sheet X centre of each column — from single-section Build2DProfile.ColumnCentreX (double[]).")]
+        [GCParameter("ColumnCentreXGC",        "GC-boxed column centres from multi-section techniques (IGCObject[]). When set, overrides ColumnCentreX.")]
+        [GCParameter("BandTopY",               "Y of the top edge of the band.")]
         [GCParameter("BandLeftX",         "X of left edge of data area.")]
         [GCParameter("BandRightX",        "X of right edge of data area.")]
         [GCParameter("RowHeight",         "Row height (master units).")]
@@ -174,6 +178,7 @@ namespace GC_OpenRoads.Nodes
             NodeUpdateContext updateContext,
             [GCIn]  CrossSectionData SectionData,
             [GCIn]  double[]         ColumnCentreX,
+            [GCIn]  IGCObject[]      ColumnCentreXGC,
             [GCIn]  double           BandTopY,
             [GCIn]  double           BandLeftX,
             [GCIn]  double           BandRightX,
@@ -199,7 +204,8 @@ namespace GC_OpenRoads.Nodes
         {
             try
             {
-                var valid = ValidateInputs(SectionData, ColumnCentreX, ExtraRowKeys, ExtraRowLabels);
+                var colX  = UnboxColumnCentres(ColumnCentreXGC, ColumnCentreX);
+                var valid = ValidateInputs(SectionData, colX, ExtraRowKeys, ExtraRowLabels);
                 if (valid != NodeUpdateResult.Success) return valid;
 
                 double rh  = RowHeight > 0 ? RowHeight : 5.0;
@@ -216,8 +222,8 @@ namespace GC_OpenRoads.Nodes
 
                 // ── Column divider X positions ────────────────────────────────
                 var colDivX = new List<double> { BandLeftX };
-                for (int c = 0; c < ColumnCentreX.Length - 1; c++)
-                    colDivX.Add(0.5 * (ColumnCentreX[c] + ColumnCentreX[c + 1]));
+                for (int c = 0; c < colX.Length - 1; c++)
+                    colDivX.Add(0.5 * (colX[c] + colX[c + 1]));
                 colDivX.Add(BandRightX);
 
                 double boxLeft   = BandLeftX - lcw;
@@ -284,6 +290,14 @@ namespace GC_OpenRoads.Nodes
         // =====================================================================
         //  PRIVATE HELPERS
         // =====================================================================
+
+        private double[] UnboxColumnCentres(IGCObject[] gcArr, double[] fallback)
+        {
+            if (gcArr == null || gcArr.Length == 0)
+                return fallback ?? Array.Empty<double>();
+            Unboxer unboxer = GCEnvironment().Unboxer;
+            return gcArr.Select(o => unboxer.Unbox<double>(o)).ToArray();
+        }
 
         private static NodeUpdateResult ValidateInputs(
             CrossSectionData data, double[] colX, string extraKeys, string extraLabels)
@@ -393,8 +407,13 @@ namespace GC_OpenRoads.Nodes
         // ── DGN element placement ─────────────────────────────────────────────
 
         private void PlaceLine(double x1, double y1, double x2, double y2)
-            => new LineElement(_dgnModel, null, new Bentley.GeometryNET.DSegment3d(new Bentley.GeometryNET.DPoint3d(x1, y1, 0), new Bentley.GeometryNET.DPoint3d(x2, y2, 0)))
-                          .AddToModel();
+        {
+            var e = new LineElement(_dgnModel, null, new Bentley.GeometryNET.DSegment3d(
+                new Bentley.GeometryNET.DPoint3d(x1, y1, 0),
+                new Bentley.GeometryNET.DPoint3d(x2, y2, 0)));
+            e.AddToModel();
+            SetElement(e);
+        }
 
         private void PlaceRect(double l, double b, double r, double t)
         {
@@ -402,20 +421,24 @@ namespace GC_OpenRoads.Nodes
             {
                 new(l, b, 0), new(r, b, 0), new(r, t, 0), new(l, t, 0), new(l, b, 0)
             };
-            new LineStringElement(_dgnModel, null, pts).AddToModel();
+            var e = new LineStringElement(_dgnModel, null, pts);
+            e.AddToModel();
+            SetElement(e);
         }
 
         private void PlaceText(string text, double x, double y,
             DgnTextStyle style, TextJustification justif)
         {
             if (string.IsNullOrEmpty(text)) return;
-            DSegment3d segment = new DSegment3d(new DPoint3d(x,y), new DPoint3d(x+1, y));
+            DSegment3d segment = new DSegment3d(new DPoint3d(x, y), new DPoint3d(x + 1, y));
             DVector3d rotVector = segment.UnitTangent;
             var textblock = new TextBlock(style, _dgnModel);
             textblock.AppendText(text);
             textblock.SetUserOrigin(new DPoint3d(x, y, 0));
             textblock.SetOrientation(DMatrix3d.Rotation(2, rotVector.AngleXY));
-            TextElement.CreateElement(null, textblock).AddToModel();
+            var e = TextElement.CreateElement(null, textblock);
+            e.AddToModel();
+            SetElement(e);
         }
 
         private DgnTextStyle GetOrCreateStyle(string name, double height)
