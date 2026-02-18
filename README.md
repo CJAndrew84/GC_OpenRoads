@@ -2,7 +2,7 @@
 
 **A Generative Components addon for Bentley OpenRoads Designer 2025 that automates cross-section extraction, annotation, and sheet production — parametrically.**
 
-> Developed by [AtkinsRealis](https://www.atkinsrealis.com)
+> Developed by Chris Andrew
 
 ---
 
