@@ -33,6 +33,13 @@ namespace GC_OpenRoads_CrossSections.Models
         /// </summary>
         public string PointCode   { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Rich feature metadata used to drive cross-section styling,
+        /// color assignment, and cell placement by feature definition.
+        /// Optional: existing consumers can ignore this safely.
+        /// </summary>
+        public FeatureDisplayMetadata DisplayMetadata { get; set; } = new();
+
         /// <summary>Horizontal offset from the alignment centreline (metres).</summary>
         public double Offset    { get; set; }
 
@@ -101,6 +108,12 @@ namespace GC_OpenRoads_CrossSections.Models
         /// Each entry is (offset, elevation).
         /// </summary>
         public List<(double Offset, double Elevation)> TerrainPoints { get; set; } = new();
+
+        /// <summary>
+        /// Optional 3D model elements intersected by the cross-section plane,
+        /// represented in section coordinates for drawing/display.
+        /// </summary>
+        public List<CrossSectionCutElement> CutElements { get; set; } = new();
 
         // ------------------------------------------------------------------
         //  Derived quantities (computed on first access)
@@ -198,6 +211,94 @@ namespace GC_OpenRoads_CrossSections.Models
         public double TopClearance   { get; set; } = 2.0;
         public string DrawingSeedName { get; set; } = "Cross Section";
         public string SheetSeedFile  { get; set; } = string.Empty;
+    }
+
+    // =========================================================================
+    //  FEATURE / SYMBOLOGY DISPLAY METADATA
+    // =========================================================================
+
+    /// <summary>
+    /// Normalized feature-definition information for one cross-section point.
+    /// </summary>
+    public class FeatureDisplayMetadata
+    {
+        /// <summary>Short corridor/template feature name, e.g. "EOP_L".</summary>
+        public string FeatureName { get; set; } = string.Empty;
+
+        /// <summary>Raw SDK value from XSCutPoint.PointFeatureName.</summary>
+        public string FeatureDefinitionRaw { get; set; } = string.Empty;
+
+        /// <summary>Leaf definition name, e.g. "EOP.xml".</summary>
+        public string FeatureDefinitionName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Normalized hierarchy path using '/' separators,
+        /// with filename removed.
+        /// </summary>
+        public string FeatureDefinitionPath { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Optional high-level group for styling rules (e.g. Pavement, Drainage).
+        /// </summary>
+        public string Category { get; set; } = string.Empty;
+
+        /// <summary>Optional explicit point/cell symbology mapping.</summary>
+        public SymbologyMetadata Symbology { get; set; } = new();
+
+        /// <summary>Optional cell insertion mapping for this feature.</summary>
+        public CellDisplayMetadata Cell { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Explicit display settings resolved for a feature/element.
+    /// </summary>
+    public class SymbologyMetadata
+    {
+        public int? ColorIndex { get; set; }
+        public int? LineStyle { get; set; }
+        public int? LineWeight { get; set; }
+
+        /// <summary>
+        /// If true, resolve missing values from ORD feature-definition defaults.
+        /// </summary>
+        public bool UseFeatureDefinitionDefaults { get; set; } = true;
+
+        /// <summary>
+        /// Metadata source marker (FeatureDefinition, RuleTable, NodeOverride, etc.).
+        /// </summary>
+        public string SymbologySource { get; set; } = "FeatureDefinition";
+    }
+
+    /// <summary>
+    /// Cell/block placement metadata associated with a feature definition.
+    /// </summary>
+    public class CellDisplayMetadata
+    {
+        public string CellName { get; set; } = string.Empty;
+        public double Scale { get; set; } = 1.0;
+        public double RotationDegrees { get; set; }
+
+        /// <summary>AtPoint, AtDatum, AtBandRow, or custom node-specific mode.</summary>
+        public string PlacementMode { get; set; } = "AtPoint";
+    }
+
+    /// <summary>
+    /// Intersected 3D element footprint captured at a section station.
+    /// </summary>
+    public class CrossSectionCutElement
+    {
+        public string ElementId { get; set; } = string.Empty;
+        public string SourceModel { get; set; } = string.Empty;
+        public string FeatureDefinitionName { get; set; } = string.Empty;
+
+        /// <summary>Section-space polyline points (Offset, Elevation).</summary>
+        public List<(double Offset, double Elevation)> SectionPolyline { get; set; } = new();
+
+        /// <summary>Optional world-space trace points (X, Y, Z).</summary>
+        public List<(double X, double Y, double Z)> WorldPolyline { get; set; } = new();
+
+        /// <summary>Resolved display style for this cut element.</summary>
+        public SymbologyMetadata Symbology { get; set; } = new();
     }
 
     // =========================================================================
