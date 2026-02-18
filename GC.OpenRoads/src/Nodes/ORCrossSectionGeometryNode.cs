@@ -235,6 +235,11 @@ namespace GC_OpenRoads.Nodes
     [GCParameter("ColumnSpacingMultiplier", "Multiplier for horizontal spacing: (Left+Right width)*multiplier. Default 1.5.")]
     [GCParameter("RowSpacing", "Vertical spacing between rows (sheet units). If <= 0, auto per column.")]
     // Per-section outputs (replicated to match Sections[])
+    [GCParameter("DesignProfilePoints",   "Per-section polyline through proposed design points (IGCObject[][] of DPoint3d[]).")]
+    [GCParameter("ExistingProfilePoints", "Per-section polyline through existing ground points. Empty if no terrain data.")]
+    [GCParameter("DatumLinePoints",       "Per-section two-point datum line. Empty if DrawDatumLine is false.")]
+    [GCParameter("TickMarkPoints",        "Per-section paired tick mark points (base, tip per feature point).")]
+    [GCParameter("DropLinePoints",        "Per-section paired drop line points. Empty if DrawVerticalDropLines is false.")]
     [GCParameter("ColumnCentreX",      "Per-section X centres of each feature column (IGCObject[][]). Wire to ORAnnotationBand.ColumnCentreXGC.")]
     [GCParameter("AnnotationBandTopY", "Per-section Y of the top edge of the annotation band — feed to ORAnnotationBand.")]
     [GCParameter("ProfileLeftX", "Per-section X of leftmost feature point.")]
@@ -268,12 +273,11 @@ namespace GC_OpenRoads.Nodes
     [GCIn] double ColumnSpacingMultiplier,
     [GCIn] double RowSpacing,
 
-    // Note: DPoint3d[][] are computed internally and not exposed as GC outputs (jagged arrays unsupported).
-    ref DPoint3d[][] DesignProfilePoints,
-    ref DPoint3d[][] ExistingProfilePoints,
-    ref DPoint3d[][] DatumLinePoints,
-    ref DPoint3d[][] TickMarkPoints,
-    ref DPoint3d[][] DropLinePoints,
+    [GCOut, GCReplicatable, GCInitiallyPinned] ref IGCObject[][] DesignProfilePoints,
+    [GCOut, GCReplicatable, GCInitiallyPinned] ref IGCObject[][] ExistingProfilePoints,
+    [GCOut, GCReplicatable, GCInitiallyPinned] ref IGCObject[][] DatumLinePoints,
+    [GCOut, GCReplicatable, GCInitiallyPinned] ref IGCObject[][] TickMarkPoints,
+    [GCOut, GCReplicatable, GCInitiallyPinned] ref IGCObject[][] DropLinePoints,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref IGCObject[][] ColumnCentreX,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] AnnotationBandTopY,
     [GCOut, GCReplicatable, GCInitiallyPinned] ref double[] ProfileLeftX,
@@ -504,14 +508,14 @@ namespace GC_OpenRoads.Nodes
                 outExisting[i] = (eg.Length >= 2) ? eg : Array.Empty<DPoint3d>();
             }
 
-            // Assign outputs
-            DesignProfilePoints = outDesign;
-            ExistingProfilePoints = outExisting;
-            DatumLinePoints = outDatum;
-            TickMarkPoints = outTicks;
-            DropLinePoints = outDrops;
+            // Assign outputs — box all jagged arrays to IGCObject[][] for GC compatibility
             Boxer boxer = GCEnvironment().Boxer;
-            ColumnCentreX = outCols.Select(c => c.Select(v => boxer.BoxToCompatible(v)).ToArray()).ToArray();
+            DesignProfilePoints   = outDesign.Select(pts => pts.Select(p => boxer.BoxToCompatible(p)).ToArray()).ToArray();
+            ExistingProfilePoints = outExisting.Select(pts => pts.Select(p => boxer.BoxToCompatible(p)).ToArray()).ToArray();
+            DatumLinePoints       = outDatum.Select(pts => pts.Select(p => boxer.BoxToCompatible(p)).ToArray()).ToArray();
+            TickMarkPoints        = outTicks.Select(pts => pts.Select(p => boxer.BoxToCompatible(p)).ToArray()).ToArray();
+            DropLinePoints        = outDrops.Select(pts => pts.Select(p => boxer.BoxToCompatible(p)).ToArray()).ToArray();
+            ColumnCentreX         = outCols.Select(c => c.Select(v => boxer.BoxToCompatible(v)).ToArray()).ToArray();
             AnnotationBandTopY = outAnnTop;
             ProfileLeftX = outLeftX;
             ProfileRightX = outRightX;
@@ -704,12 +708,12 @@ namespace GC_OpenRoads.Nodes
                 return new NodeUpdateResult.IncompleteInputs(nameof(Sections));
 
             // --- Call the multi-section builder to compute everything in sheet space ---
-            DPoint3d[][] designPts = Array.Empty<DPoint3d[]>();
-            DPoint3d[][] existingPts = Array.Empty<DPoint3d[]>();
-            DPoint3d[][] datumPts = Array.Empty<DPoint3d[]>();
-            DPoint3d[][] tickPts = Array.Empty<DPoint3d[]>();
-            DPoint3d[][] dropPts = Array.Empty<DPoint3d[]>();
-            IGCObject[][] colCentres = Array.Empty<IGCObject[]>();
+            IGCObject[][] designPts   = Array.Empty<IGCObject[]>();
+            IGCObject[][] existingPts = Array.Empty<IGCObject[]>();
+            IGCObject[][] datumPts    = Array.Empty<IGCObject[]>();
+            IGCObject[][] tickPts     = Array.Empty<IGCObject[]>();
+            IGCObject[][] dropPts     = Array.Empty<IGCObject[]>();
+            IGCObject[][] colCentres  = Array.Empty<IGCObject[]>();
             double[] annTopY = Array.Empty<double>();
             double[] leftX = Array.Empty<double>();
             double[] rightX = Array.Empty<double>();
@@ -766,7 +770,9 @@ namespace GC_OpenRoads.Nodes
                 return buildResult;
 
             // --- Place elements in DGN for each section ---
-            // (Optional) You may wish to tag/group by section index, level, or item type here.
+            // Unbox IGCObject[] → DPoint3d[] before creating DGN elements.
+            // Each element is registered with SetElement so GC can delete it on rerun.
+            Unboxer unboxer = GCEnvironment().Unboxer;
             int n = Sections.Length;
 
             for (int i = 0; i < n; i++)
@@ -774,57 +780,62 @@ namespace GC_OpenRoads.Nodes
                 // Design profile
                 if (designPts != null && i < designPts.Length && designPts[i] != null && designPts[i].Length >= 2)
                 {
-                    var e = new LineStringElement(DrawingModel, null, designPts[i]);
+                    var pts = designPts[i].Select(o => unboxer.Unbox<DPoint3d>(o)).ToArray();
+                    var e = new LineStringElement(DrawingModel, null, pts);
                     e.AddToModel();
+                    SetElement(e);
                 }
 
                 // Existing profile (terrain) if available
                 if (existingPts != null && i < existingPts.Length && existingPts[i] != null && existingPts[i].Length >= 2)
                 {
-                    var e = new LineStringElement(DrawingModel, null, existingPts[i]);
+                    var pts = existingPts[i].Select(o => unboxer.Unbox<DPoint3d>(o)).ToArray();
+                    var e = new LineStringElement(DrawingModel, null, pts);
                     e.AddToModel();
+                    SetElement(e);
                 }
 
                 // Datum line (horizontal)
                 if (DrawDatumLine && datumPts != null && i < datumPts.Length && datumPts[i] != null && datumPts[i].Length == 2)
                 {
-                    var seg = new Bentley.GeometryNET.DSegment3d(datumPts[i][0], datumPts[i][1]);
+                    var dp = datumPts[i].Select(o => unboxer.Unbox<DPoint3d>(o)).ToArray();
+                    var seg = new Bentley.GeometryNET.DSegment3d(dp[0], dp[1]);
                     var e = new LineElement(DrawingModel, null, seg);
                     e.AddToModel();
+                    SetElement(e);
                 }
 
-                // (Optional) Short vertical tick at CL on the datum (kept consistent with your sample)
-                // If you prefer not to draw this, comment out this block.
+                // Short vertical tick at CL on the datum
                 if (i < clX.Length && i < datumY.Length)
                 {
                     var p0 = new Bentley.GeometryNET.DPoint3d(clX[i], datumY[i] - 10.0, 0);
                     var p1 = new Bentley.GeometryNET.DPoint3d(clX[i], datumY[i] + 10.0, 0);
-                    var seg = new Bentley.GeometryNET.DSegment3d(p0, p1);
-                    var e = new LineElement(DrawingModel, null, seg);
+                    var e = new LineElement(DrawingModel, null, new Bentley.GeometryNET.DSegment3d(p0, p1));
                     e.AddToModel();
+                    SetElement(e);
                 }
 
                 // Feature ticks
                 if (tickPts != null && i < tickPts.Length && tickPts[i] != null)
                 {
-                    var arr = tickPts[i];
+                    var arr = tickPts[i].Select(o => unboxer.Unbox<DPoint3d>(o)).ToArray();
                     for (int k = 0; k + 1 < arr.Length; k += 2)
                     {
-                        var seg = new Bentley.GeometryNET.DSegment3d(arr[k], arr[k + 1]);
-                        var e = new LineElement(DrawingModel, null, seg);
+                        var e = new LineElement(DrawingModel, null, new Bentley.GeometryNET.DSegment3d(arr[k], arr[k + 1]));
                         e.AddToModel();
+                        SetElement(e);
                     }
                 }
 
                 // Drop lines
                 if (DrawVerticalDropLines && dropPts != null && i < dropPts.Length && dropPts[i] != null)
                 {
-                    var arr = dropPts[i];
+                    var arr = dropPts[i].Select(o => unboxer.Unbox<DPoint3d>(o)).ToArray();
                     for (int k = 0; k + 1 < arr.Length; k += 2)
                     {
-                        var seg = new Bentley.GeometryNET.DSegment3d(arr[k], arr[k + 1]);
-                        var e = new LineElement(DrawingModel, null, seg);
+                        var e = new LineElement(DrawingModel, null, new Bentley.GeometryNET.DSegment3d(arr[k], arr[k + 1]));
                         e.AddToModel();
+                        SetElement(e);
                     }
                 }
             }

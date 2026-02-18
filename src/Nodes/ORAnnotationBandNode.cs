@@ -387,8 +387,11 @@ namespace GC_OpenRoads.Nodes
         // ── DGN element placement ─────────────────────────────────────────────
 
         private void PlaceLine(double x1, double y1, double x2, double y2)
-            => LineElement.Create(_dgnModel, new DPoint3d(x1, y1, 0), new DPoint3d(x2, y2, 0))
-                          .AddToModel();
+        {
+            var e = LineElement.Create(_dgnModel, new DPoint3d(x1, y1, 0), new DPoint3d(x2, y2, 0));
+            e.AddToModel();
+            SetElement(e);
+        }
 
         private void PlaceRect(double l, double b, double r, double t)
         {
@@ -396,15 +399,18 @@ namespace GC_OpenRoads.Nodes
             {
                 new(l, b, 0), new(r, b, 0), new(r, t, 0), new(l, t, 0), new(l, b, 0)
             };
-            new LineStringElement(_dgnModel, null, pts).AddToModel();
+            var e = new LineStringElement(_dgnModel, null, pts);
+            e.AddToModel();
+            SetElement(e);
         }
 
         private void PlaceText(string text, double x, double y,
             DgnTextStyle style, TextJustification justif)
         {
             if (string.IsNullOrEmpty(text)) return;
-            new TextElement(_dgnModel, text, new DPoint3d(x, y, 0), style, justif)
-                .AddToModel();
+            var e = new TextElement(_dgnModel, text, new DPoint3d(x, y, 0), style, justif);
+            e.AddToModel();
+            SetElement(e);
         }
 
         private DgnTextStyle GetOrCreateStyle(string name, double height)

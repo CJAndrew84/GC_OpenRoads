@@ -244,14 +244,32 @@ namespace GC_OpenRoads.Nodes
 
             try
             {
-                if (designPts.Length  >= 2) new LineStringElement(_dgnModel, null, designPts).AddToModel();
-                if (existingPts.Length >= 2) new LineStringElement(_dgnModel, null, existingPts).AddToModel();
-                if (datumPts.Length   == 2) LineElement.Create(_dgnModel, datumPts[0], datumPts[1]).AddToModel();
-
+                Element e;
+                if (designPts.Length >= 2)
+                {
+                    e = new LineStringElement(_dgnModel, null, designPts);
+                    e.AddToModel(); SetElement(e);
+                }
+                if (existingPts.Length >= 2)
+                {
+                    e = new LineStringElement(_dgnModel, null, existingPts);
+                    e.AddToModel(); SetElement(e);
+                }
+                if (datumPts.Length == 2)
+                {
+                    e = LineElement.Create(_dgnModel, datumPts[0], datumPts[1]);
+                    e.AddToModel(); SetElement(e);
+                }
                 for (int i = 0; i + 1 < tickPts.Length; i += 2)
-                    LineElement.Create(_dgnModel, tickPts[i], tickPts[i + 1]).AddToModel();
+                {
+                    e = LineElement.Create(_dgnModel, tickPts[i], tickPts[i + 1]);
+                    e.AddToModel(); SetElement(e);
+                }
                 for (int i = 0; i + 1 < dropPts.Length; i += 2)
-                    LineElement.Create(_dgnModel, dropPts[i], dropPts[i + 1]).AddToModel();
+                {
+                    e = LineElement.Create(_dgnModel, dropPts[i], dropPts[i + 1]);
+                    e.AddToModel(); SetElement(e);
+                }
 
                 AnnotationBandTopY = bandTopY;
                 ColumnCentreX      = colX;
