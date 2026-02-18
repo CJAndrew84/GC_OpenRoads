@@ -63,6 +63,7 @@ namespace GC_OpenRoads.Nodes
         [GCParameter("DatumLinePoints",            "Two points defining the horizontal datum line.")]
         [GCParameter("TickMarkPoints",             "Paired points (base, tip) for each feature point tick.")]
         [GCParameter("DropLinePoints",             "Paired points (feature Y, datum Y) for drop lines.")]
+        [GCParameter("CutElementProfilePoints",      "2D cut-element polylines from curve-plane intersections (flattened pairs separated by NaN).")]
         [GCParameter("ColumnCentreX",              "Sheet X centre of each feature point column — feed to ORAnnotationBand.")]
         [GCParameter("AnnotationBandTopY",         "Y of top edge of annotation band — feed to ORAnnotationBand.")]
         [GCParameter("ProfileLeftX",               "X of leftmost feature point.")]
@@ -92,6 +93,7 @@ namespace GC_OpenRoads.Nodes
             [GCOut, GCInitiallyPinned] ref DPoint3d[] DatumLinePoints,
             [GCOut, GCInitiallyPinned] ref DPoint3d[] TickMarkPoints,
             [GCOut, GCInitiallyPinned] ref DPoint3d[] DropLinePoints,
+            [GCOut, GCInitiallyPinned] ref DPoint3d[] CutElementProfilePoints,
             [GCOut, GCReplicatable, GCInitiallyPinned] ref double[]   ColumnCentreX,
             [GCOut, GCReplicatable, GCInitiallyPinned] ref double     AnnotationBandTopY,
             [GCOut, GCInitiallyPinned] ref double     ProfileLeftX,
@@ -181,6 +183,34 @@ namespace GC_OpenRoads.Nodes
                     .ToArray();
                 if (ExistingProfilePoints.Length < 2)
                     ExistingProfilePoints = Array.Empty<DPoint3d>();
+
+                // Flatten cut-element section polylines into a single array,
+                // separating each polyline with a NaN sentinel point.
+                var cutPts = new List<DPoint3d>();
+                if (SectionData.CutElements != null && SectionData.CutElements.Count > 0)
+                {
+                    foreach (var cut in SectionData.CutElements)
+                    {
+                        if (cut?.SectionPolyline == null || cut.SectionPolyline.Count < 2)
+                            continue;
+
+                        foreach (var q in cut.SectionPolyline.OrderBy(p => p.Offset))
+                        {
+                            cutPts.Add(new DPoint3d(
+                                OriginX + (q.Offset - refOff) / hd,
+                                OriginY + (q.Elevation - refElev) / vd,
+                                0));
+                        }
+
+                        cutPts.Add(new DPoint3d(double.NaN, double.NaN, double.NaN));
+                    }
+                }
+
+                if (cutPts.Count > 0 && double.IsNaN(cutPts[cutPts.Count - 1].X))
+                    cutPts.RemoveAt(cutPts.Count - 1);
+
+                CutElementProfilePoints = cutPts.Count > 0 ? cutPts.ToArray() : Array.Empty<DPoint3d>();
+
             }
             catch (Exception ex)
             {

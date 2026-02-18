@@ -28,6 +28,7 @@ using Bentley.CifNET.SDK;
 using Bentley.CifNET.SDK.Edit;
 using Bentley.DgnPlatformNET;
 using Bentley.MstnPlatformNET;
+using Bentley.GeometryNET;
 using GC_OpenRoads_CrossSections.Models;
 using System;
 using System.Collections.Generic;
@@ -286,6 +287,10 @@ namespace GC_OpenRoads.Utilities
                     // PointFeatureName = full definition path — strip to filename
                     PointCode   = CleanFeatureName(pt.PointFeatureName),
 
+                    DisplayMetadata = BuildFeatureDisplayMetadata(
+                        pt.PointName,
+                        pt.PointFeatureName),
+
                     // Point.X = offset from CL (metres), Point.Y = elevation (metres)
                     Offset      = pt.Point.X,
                     Elevation   = pt.Point.Y,
@@ -393,6 +398,338 @@ namespace GC_OpenRoads.Utilities
             }
         }
 
+
+
+        /// <summary>
+        /// Intersects 3D source curves with the computed section plane for this station
+        /// and returns cut footprints in section coordinates (offset/elevation).
+        /// </summary>
+        public static List<CrossSectionCutElement> ExtractCutElementsFromCurves(
+            CrossSectionData section,
+            IEnumerable<DPoint3d[]> sourceCurves,
+            double intersectionTolerance = 1e-4)
+        {
+            var cutElements = new List<CrossSectionCutElement>();
+            if (section == null || section.Points == null || section.Points.Count < 2 || sourceCurves == null)
+                return cutElements;
+
+            if (!TryBuildSectionFrame(section, out DPoint3d origin, out DVector3d rightDir, out DVector3d planeNormal))
+                return cutElements;
+
+            int curveIndex = 0;
+            foreach (var curve in sourceCurves)
+            {
+                curveIndex++;
+                if (curve == null || curve.Length < 2) continue;
+
+                var sectionPts = new List<(double Offset, double Elevation)>();
+                var worldPts = new List<(double X, double Y, double Z)>();
+
+                for (int i = 1; i < curve.Length; i++)
+                {
+                    DPoint3d p0 = curve[i - 1];
+                    DPoint3d p1 = curve[i];
+
+                    double d0 = SignedDistanceToPlane(p0, origin, planeNormal);
+                    double d1 = SignedDistanceToPlane(p1, origin, planeNormal);
+
+                    bool p0On = Math.Abs(d0) <= intersectionTolerance;
+                    bool p1On = Math.Abs(d1) <= intersectionTolerance;
+
+                    if (p0On)
+                        AddIntersectionPoint(p0, origin, rightDir, sectionPts, worldPts, intersectionTolerance);
+
+                    if (p1On)
+                        AddIntersectionPoint(p1, origin, rightDir, sectionPts, worldPts, intersectionTolerance);
+
+                    // Segment crosses plane
+                    if ((d0 < -intersectionTolerance && d1 > intersectionTolerance) ||
+                        (d0 > intersectionTolerance && d1 < -intersectionTolerance))
+                    {
+                        double t = d0 / (d0 - d1);
+                        t = Math.Max(0.0, Math.Min(1.0, t));
+
+                        DPoint3d pi = new DPoint3d(
+                            p0.X + (p1.X - p0.X) * t,
+                            p0.Y + (p1.Y - p0.Y) * t,
+                            p0.Z + (p1.Z - p0.Z) * t);
+
+                        AddIntersectionPoint(pi, origin, rightDir, sectionPts, worldPts, intersectionTolerance);
+                    }
+                }
+
+                if (sectionPts.Count > 1)
+                {
+                    sectionPts = sectionPts
+                        .OrderBy(pt => pt.Offset)
+                        .ToList();
+
+                    cutElements.Add(new CrossSectionCutElement
+                    {
+                        ElementId = $"Curve_{curveIndex}",
+                        FeatureDefinitionName = "ModelCurve",
+                        SectionPolyline = sectionPts,
+                        WorldPolyline = worldPts,
+                        Symbology = new SymbologyMetadata
+                        {
+                            UseFeatureDefinitionDefaults = false,
+                            SymbologySource = "CurvePlaneIntersection"
+                        }
+                    });
+                }
+            }
+
+            return cutElements;
+        }
+
+
+
+        /// <summary>
+        /// Intersects triangulated mesh facets with the section plane and returns
+        /// section-space cut segments for each intersected facet.
+        /// </summary>
+        public static List<CrossSectionCutElement> ExtractCutElementsFromMeshTriangles(
+            CrossSectionData section,
+            IEnumerable<DPoint3d[]> meshTriangles,
+            double intersectionTolerance = 1e-4)
+        {
+            return ExtractCutElementsFromTriangles(
+                section,
+                meshTriangles,
+                "MeshTriangle",
+                "ModelMesh",
+                intersectionTolerance);
+        }
+
+        /// <summary>
+        /// Intersects triangulated surface facets with the section plane and returns
+        /// section-space cut segments for each intersected facet.
+        /// </summary>
+        public static List<CrossSectionCutElement> ExtractCutElementsFromSurfaceTriangles(
+            CrossSectionData section,
+            IEnumerable<DPoint3d[]> surfaceTriangles,
+            double intersectionTolerance = 1e-4)
+        {
+            return ExtractCutElementsFromTriangles(
+                section,
+                surfaceTriangles,
+                "SurfaceTriangle",
+                "ModelSurface",
+                intersectionTolerance);
+        }
+
+
+        /// <summary>
+        /// Intersects triangulated solid shell facets with the section plane and returns
+        /// section-space cut segments for each intersected solid facet.
+        /// </summary>
+        public static List<CrossSectionCutElement> ExtractCutElementsFromSolidTriangles(
+            CrossSectionData section,
+            IEnumerable<DPoint3d[]> solidTriangles,
+            double intersectionTolerance = 1e-4)
+        {
+            return ExtractCutElementsFromTriangles(
+                section,
+                solidTriangles,
+                "SolidTriangle",
+                "ModelSolid",
+                intersectionTolerance);
+        }
+
+        private static List<CrossSectionCutElement> ExtractCutElementsFromTriangles(
+            CrossSectionData section,
+            IEnumerable<DPoint3d[]> triangles,
+            string elementPrefix,
+            string featureName,
+            double intersectionTolerance)
+        {
+            var cutElements = new List<CrossSectionCutElement>();
+            if (section == null || triangles == null || section.Points == null || section.Points.Count < 2)
+                return cutElements;
+
+            if (!TryBuildSectionFrame(section, out DPoint3d origin, out DVector3d rightDir, out DVector3d planeNormal))
+                return cutElements;
+
+            int triIndex = 0;
+            foreach (var tri in triangles)
+            {
+                triIndex++;
+                if (tri == null || tri.Length < 3)
+                    continue;
+
+                var worldIntersections = new List<DPoint3d>();
+                AddTriangleEdgeIntersections(tri[0], tri[1], origin, planeNormal, worldIntersections, intersectionTolerance);
+                AddTriangleEdgeIntersections(tri[1], tri[2], origin, planeNormal, worldIntersections, intersectionTolerance);
+                AddTriangleEdgeIntersections(tri[2], tri[0], origin, planeNormal, worldIntersections, intersectionTolerance);
+
+                if (worldIntersections.Count < 2)
+                    continue;
+
+                var sectionPolyline = new List<(double Offset, double Elevation)>();
+                var worldPolyline = new List<(double X, double Y, double Z)>();
+
+                foreach (var wp in worldIntersections)
+                {
+                    double off = ProjectOffsetOnSection(wp, origin, rightDir);
+                    sectionPolyline.Add((off, wp.Z));
+                    worldPolyline.Add((wp.X, wp.Y, wp.Z));
+                }
+
+                sectionPolyline = sectionPolyline
+                    .OrderBy(p => p.Offset)
+                    .ToList();
+
+                cutElements.Add(new CrossSectionCutElement
+                {
+                    ElementId = $"{elementPrefix}_{triIndex}",
+                    FeatureDefinitionName = featureName,
+                    SectionPolyline = sectionPolyline,
+                    WorldPolyline = worldPolyline,
+                    Symbology = new SymbologyMetadata
+                    {
+                        UseFeatureDefinitionDefaults = false,
+                        SymbologySource = "PlaneFacetIntersection"
+                    }
+                });
+            }
+
+            return cutElements;
+        }
+
+        private static void AddTriangleEdgeIntersections(
+            DPoint3d p0,
+            DPoint3d p1,
+            DPoint3d origin,
+            DVector3d planeNormal,
+            List<DPoint3d> intersections,
+            double tolerance)
+        {
+            double d0 = SignedDistanceToPlane(p0, origin, planeNormal);
+            double d1 = SignedDistanceToPlane(p1, origin, planeNormal);
+
+            bool p0On = Math.Abs(d0) <= tolerance;
+            bool p1On = Math.Abs(d1) <= tolerance;
+
+            if (p0On) AddUniqueWorldPoint(intersections, p0, tolerance);
+            if (p1On) AddUniqueWorldPoint(intersections, p1, tolerance);
+
+            if ((d0 < -tolerance && d1 > tolerance) || (d0 > tolerance && d1 < -tolerance))
+            {
+                double t = d0 / (d0 - d1);
+                t = Math.Max(0.0, Math.Min(1.0, t));
+
+                var pi = new DPoint3d(
+                    p0.X + (p1.X - p0.X) * t,
+                    p0.Y + (p1.Y - p0.Y) * t,
+                    p0.Z + (p1.Z - p0.Z) * t);
+
+                AddUniqueWorldPoint(intersections, pi, tolerance);
+            }
+        }
+
+        private static void AddUniqueWorldPoint(List<DPoint3d> pts, DPoint3d p, double tolerance)
+        {
+            bool dupe = pts.Any(q =>
+                Math.Abs(q.X - p.X) <= tolerance &&
+                Math.Abs(q.Y - p.Y) <= tolerance &&
+                Math.Abs(q.Z - p.Z) <= tolerance);
+            if (!dupe)
+                pts.Add(p);
+        }
+
+        private static double ProjectOffsetOnSection(DPoint3d worldPoint, DPoint3d origin, DVector3d rightDir)
+        {
+            double dx = worldPoint.X - origin.X;
+            double dy = worldPoint.Y - origin.Y;
+            return dx * rightDir.X + dy * rightDir.Y;
+        }
+
+        private static bool TryBuildSectionFrame(
+            CrossSectionData section,
+            out DPoint3d origin,
+            out DVector3d rightDir,
+            out DVector3d planeNormal)
+        {
+            origin = new DPoint3d();
+            rightDir = new DVector3d(1, 0, 0);
+            planeNormal = new DVector3d(0, 1, 0);
+
+            var ordered = section.Points
+                .OrderBy(p => p.Offset)
+                .ToList();
+            if (ordered.Count < 2)
+                return false;
+
+            var left = ordered.First();
+            var right = ordered.Last();
+
+            DVector3d secDir = new DVector3d(
+                right.WorldX - left.WorldX,
+                right.WorldY - left.WorldY,
+                0.0);
+
+            double secMag = Math.Sqrt(secDir.X * secDir.X + secDir.Y * secDir.Y + secDir.Z * secDir.Z);
+            if (secMag < 1e-9)
+                return false;
+
+            rightDir = new DVector3d(secDir.X / secMag, secDir.Y / secMag, secDir.Z / secMag);
+
+            DVector3d up = new DVector3d(0, 0, 1);
+            planeNormal = new DVector3d(
+                rightDir.Y * up.Z - rightDir.Z * up.Y,
+                rightDir.Z * up.X - rightDir.X * up.Z,
+                rightDir.X * up.Y - rightDir.Y * up.X);
+
+            double nMag = Math.Sqrt(planeNormal.X * planeNormal.X + planeNormal.Y * planeNormal.Y + planeNormal.Z * planeNormal.Z);
+            if (nMag < 1e-9)
+                return false;
+
+            planeNormal = new DVector3d(planeNormal.X / nMag, planeNormal.Y / nMag, planeNormal.Z / nMag);
+
+            var cl = section.Points.FirstOrDefault(p =>
+                p.FeatureName.Equals("CL", StringComparison.OrdinalIgnoreCase) ||
+                p.PointCode.Equals("CL", StringComparison.OrdinalIgnoreCase));
+
+            if (cl != null)
+                origin = new DPoint3d(cl.WorldX, cl.WorldY, cl.WorldZ);
+            else
+            {
+                origin = new DPoint3d(
+                    0.5 * (left.WorldX + right.WorldX),
+                    0.5 * (left.WorldY + right.WorldY),
+                    0.5 * (left.WorldZ + right.WorldZ));
+            }
+
+            return true;
+        }
+
+        private static double SignedDistanceToPlane(DPoint3d p, DPoint3d origin, DVector3d normal)
+        {
+            return (p.X - origin.X) * normal.X +
+                   (p.Y - origin.Y) * normal.Y +
+                   (p.Z - origin.Z) * normal.Z;
+        }
+
+        private static void AddIntersectionPoint(
+            DPoint3d worldPoint,
+            DPoint3d origin,
+            DVector3d rightDir,
+            List<(double Offset, double Elevation)> sectionPts,
+            List<(double X, double Y, double Z)> worldPts,
+            double tolerance)
+        {
+            double offset = ProjectOffsetOnSection(worldPoint, origin, rightDir);
+            double elev = worldPoint.Z;
+
+            bool duplicate = sectionPts.Any(p =>
+                Math.Abs(p.Offset - offset) <= tolerance &&
+                Math.Abs(p.Elevation - elev) <= tolerance);
+            if (duplicate) return;
+
+            sectionPts.Add((offset, elev));
+            worldPts.Add((worldPoint.X, worldPoint.Y, worldPoint.Z));
+        }
+
         // ─────────────────────────────────────────────────────────────────────
         //  Station formatting
         // ─────────────────────────────────────────────────────────────────────
@@ -416,6 +753,57 @@ namespace GC_OpenRoads.Utilities
         /// Strips the directory path from a feature definition name,
         /// matching the getCleanDefName() method in XSCutPointReporter.
         /// </summary>
+
+
+        private static FeatureDisplayMetadata BuildFeatureDisplayMetadata(string featureName, string featureDefinitionRaw)
+        {
+            string raw = featureDefinitionRaw ?? string.Empty;
+            string leaf = CleanFeatureName(raw);
+            string path = NormalizeFeaturePath(raw);
+
+            return new FeatureDisplayMetadata
+            {
+                FeatureName = featureName ?? string.Empty,
+                FeatureDefinitionRaw = raw,
+                FeatureDefinitionName = leaf,
+                FeatureDefinitionPath = path,
+                Category = InferFeatureCategory(featureName, leaf),
+                Symbology = new SymbologyMetadata
+                {
+                    UseFeatureDefinitionDefaults = true,
+                    SymbologySource = "FeatureDefinition"
+                },
+                Cell = new CellDisplayMetadata
+                {
+                    PlacementMode = "AtPoint"
+                }
+            };
+        }
+
+        private static string NormalizeFeaturePath(string rawPath)
+        {
+            if (string.IsNullOrWhiteSpace(rawPath)) return string.Empty;
+
+            string normalized = rawPath.Replace('\\', '/');
+            int idx = normalized.LastIndexOf('/');
+            if (idx <= 0) return string.Empty;
+
+            return normalized.Substring(0, idx).Trim('/');
+        }
+
+        private static string InferFeatureCategory(string featureName, string featureDefinitionName)
+        {
+            string token = ((featureName ?? string.Empty) + " " + (featureDefinitionName ?? string.Empty)).ToUpperInvariant();
+
+            if (token.Contains("PAVE") || token.Contains("LANE") || token.Contains("EOP")) return "Pavement";
+            if (token.Contains("DRAIN") || token.Contains("DITCH") || token.Contains("GUTTER")) return "Drainage";
+            if (token.Contains("SHOULDER")) return "Shoulder";
+            if (token.Contains("DAYLIGHT") || token.Contains("SLOPE")) return "Earthworks";
+            if (token.Contains("KERB") || token.Contains("CURB")) return "Kerb";
+
+            return string.Empty;
+        }
+
         private static string CleanFeatureName(string filePath)
         {
             if (string.IsNullOrEmpty(filePath)) return filePath ?? string.Empty;

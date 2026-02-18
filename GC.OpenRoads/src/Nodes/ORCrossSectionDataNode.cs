@@ -12,6 +12,7 @@ using Bentley.GenerativeComponents.View;
 using BDPnet = Bentley.DgnPlatformNET;
 using Bentley.MstnPlatformNET;
 using Bentley.CifNET.GeometryModel.SDK;
+using Bentley.GeometryNET;
 using GC_OpenRoads_CrossSections.Models;
 using GC_OpenRoads.Utilities;
 
@@ -39,6 +40,11 @@ namespace GC_OpenRoads.Nodes
         [GCParameter("EndStation",        "End chainage (metres). 0 = corridor end.")]
         [GCParameter("StationInterval",   "Distance between sections (metres). Default 10.")]
         [GCParameter("ExtraStations",     "Comma-separated extra chainages to always include.")]
+        [GCParameter("Enable3DCutElements", "If true, intersects source 3D curves with section plane at each station.")]
+        [GCParameter("SourceModelCurves", "3D source curves in world coordinates (DPoint3d[] per curve).")]
+        [GCParameter("SourceMeshTriangles", "Triangulated mesh facets (DPoint3d[3] per triangle).")]
+        [GCParameter("SourceSurfaceTriangles", "Triangulated surface facets (DPoint3d[3] per triangle).")]
+        [GCParameter("SourceSolidTriangles", "Triangulated solid shell facets (DPoint3d[3] per triangle).")]
         [GCParameter("Sections",          "Extracted section data objects.")]
         [GCParameter("SectionCount",      "Number of sections extracted.")]
         [GCParameter("TotalCutArea",       "Sum of cut areas across all sections (m²).")]
@@ -56,6 +62,11 @@ namespace GC_OpenRoads.Nodes
             [GCIn]  double   EndStation,
             [GCIn]  double   StationInterval,
             [GCIn]  string   ExtraStations,
+            [GCIn]  bool     Enable3DCutElements,
+            [GCIn]  DPoint3d[][] SourceModelCurves,
+            [GCIn]  DPoint3d[][] SourceMeshTriangles,
+            [GCIn]  DPoint3d[][] SourceSurfaceTriangles,
+            [GCIn]  DPoint3d[][] SourceSolidTriangles,
             [GCIn]  double   LeftWidth,
             [GCIn]  double   RightWidth,
             [GCOut, GCReplicatable, GCInitiallyPinned] ref CrossSectionData[] Sections,
@@ -120,6 +131,28 @@ namespace GC_OpenRoads.Nodes
                         .ToList();
                 }
 
+                if (Enable3DCutElements)
+                {
+                    foreach (var s in sections)
+                    {
+                        var cutElements = new List<CrossSectionCutElement>();
+
+                        if (SourceModelCurves != null && SourceModelCurves.Length > 0)
+                            cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromCurves(s, SourceModelCurves));
+
+                        if (SourceMeshTriangles != null && SourceMeshTriangles.Length > 0)
+                            cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromMeshTriangles(s, SourceMeshTriangles));
+
+                        if (SourceSurfaceTriangles != null && SourceSurfaceTriangles.Length > 0)
+                            cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromSurfaceTriangles(s, SourceSurfaceTriangles));
+
+                        if (SourceSolidTriangles != null && SourceSolidTriangles.Length > 0)
+                            cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromSolidTriangles(s, SourceSolidTriangles));
+
+                        s.CutElements = cutElements;
+                    }
+                }
+
                 Sections      = sections.ToArray();
                 SectionCount  = sections.Count;
                 StationLabels = sections.Select(s => s.StationLabel).ToArray();
@@ -155,6 +188,11 @@ namespace GC_OpenRoads.Nodes
         [GCParameter("CorridorName",  "Corridor to sample.")]
         [GCParameter("AlignmentName", "Parent alignment (enables terrain sampling).")]
         [GCParameter("Station",       "Chainage to sample (metres).")]
+        [GCParameter("Enable3DCutElements", "If true, intersects source 3D curves with section plane.")]
+        [GCParameter("SourceModelCurves", "3D source curves in world coordinates (DPoint3d[] per curve).")]
+        [GCParameter("SourceMeshTriangles", "Triangulated mesh facets (DPoint3d[3] per triangle).")]
+        [GCParameter("SourceSurfaceTriangles", "Triangulated surface facets (DPoint3d[3] per triangle).")]
+        [GCParameter("SourceSolidTriangles", "Triangulated solid shell facets (DPoint3d[3] per triangle).")]
         [GCParameter("Section",       "Extracted section data.")]
         public NodeUpdateResult AtStation
         (
@@ -162,6 +200,11 @@ namespace GC_OpenRoads.Nodes
             [GCIn]  string           CorridorName,
             [GCIn]  string           AlignmentName,
             [GCIn]  double           Station,
+            [GCIn]  bool             Enable3DCutElements,
+            [GCIn]  DPoint3d[][]     SourceModelCurves,
+            [GCIn]  DPoint3d[][]     SourceMeshTriangles,
+            [GCIn]  DPoint3d[][]     SourceSurfaceTriangles,
+            [GCIn]  DPoint3d[][]     SourceSolidTriangles,
             [GCOut, GCInitiallyPinned] ref CrossSectionData Section
         )
         {
@@ -183,6 +226,25 @@ namespace GC_OpenRoads.Nodes
 
                 if (section == null)
                     return new NodeUpdateResult.TechniqueInvalidArguments(nameof(Station));
+
+                if (Enable3DCutElements)
+                {
+                    var cutElements = new List<CrossSectionCutElement>();
+
+                    if (SourceModelCurves != null && SourceModelCurves.Length > 0)
+                        cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromCurves(section, SourceModelCurves));
+
+                    if (SourceMeshTriangles != null && SourceMeshTriangles.Length > 0)
+                        cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromMeshTriangles(section, SourceMeshTriangles));
+
+                    if (SourceSurfaceTriangles != null && SourceSurfaceTriangles.Length > 0)
+                        cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromSurfaceTriangles(section, SourceSurfaceTriangles));
+
+                    if (SourceSolidTriangles != null && SourceSolidTriangles.Length > 0)
+                        cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromSolidTriangles(section, SourceSolidTriangles));
+
+                    section.CutElements = cutElements;
+                }
 
                 Section = section;
             }
