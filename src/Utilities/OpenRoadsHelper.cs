@@ -31,9 +31,9 @@ using Bentley.CifNET.SDK.Edit;
 using Bentley.CifNET.Formatting;
 using Bentley.DgnPlatformNET;
 using Bentley.MstnPlatformNET;
-using GC_OpenRoads.Models;
+using GenDes_OpenRoads.Models;
 
-namespace GC_OpenRoads.Utilities
+namespace GenDes_OpenRoads.Utilities
 {
     public static class OpenRoadsHelper
     {
