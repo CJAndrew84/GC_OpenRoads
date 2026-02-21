@@ -99,6 +99,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Models\CivilNodeModels.cs" />
+    <Compile Include="src\Nodes\ORAlignmentFromElementsNode.cs" />
+    <Compile Include="src\Nodes\ORAlignmentFromPIsNode.cs" />
+    <Compile Include="src\Nodes\ORProfileFromElementsOrSegmentsNode.cs" />
+    <Compile Include="src\Nodes\ORProfileFromPIsNode.cs" />
+    <Compile Include="src\Services\AlignmentService.cs" />
+    <Compile Include="src\Services\CivilApiCapabilities.cs" />
+    <Compile Include="src\Services\IAlignmentService.cs" />
+    <Compile Include="src\Services\IProfileService.cs" />
+    <Compile Include="src\Services\ProfileService.cs" />
+    <Compile Include="src\Services\ProxyCivilStore.cs" />
+    <Compile Include="src\Utilities\CivilInputParsers.cs" />
     <Compile Include="src\Models\CrossSectionModels.cs" />
     <Compile Include="src\Nodes\ORAlignmentNode.cs" />
     <Compile Include="src\Nodes\ORAnnotationBandNode.cs" />

@@ -62,6 +62,21 @@ The solution is split into six assemblies:
 - Clamp start/end station limits without touching corridor model data.
 - Enumerate available alignments/corridors in dropdowns.
 
+
+### New Civil Construction Nodes (Alignment/Profile authoring)
+- `ORAlignmentFromPIsNode`: builds or updates horizontal alignments from PI points with optional radius/spiral metadata.
+- `ORAlignmentFromElementsNode`: builds or updates horizontal alignments from element-derived chain geometry.
+- `ORProfileFromPIsNode`: builds or updates vertical profiles from station/elevation PI points tied to an alignment handle.
+- `ORProfileFromElementsOrSegmentsNode`: builds or updates vertical profiles from explicit profile segments.
+
+Each node supports:
+- deterministic IDs (same input signature => same proxy id when no explicit existing id is supplied),
+- update-in-place via `ExistingAlignmentId` / `ExistingProfileId`,
+- `Persist` vs non-persist (proxy/transient) modes,
+- robust validation with actionable messages in node `Report` output.
+
+See `GenDes.OpenRoads/SampleGraphs/CivilAlignmentAndProfileSamples.json` for minimal sample inputs.
+
 ### Cross-Section Data
 - Extract at fixed intervals or explicit station lists.
 - Compute cut/fill areas.

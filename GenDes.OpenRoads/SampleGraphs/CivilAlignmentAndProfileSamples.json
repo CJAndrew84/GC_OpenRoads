@@ -1,0 +1,31 @@
+{
+  "samples": [
+    {
+      "node": "ORAlignmentFromPIsNode",
+      "inputs": {
+        "Name": "Mainline_A",
+        "PIs": [[0, 0, 0], [100, 0, 0], [180, 60, 0]],
+        "CurveRadius": [null, 50, null],
+        "UseSpirals": false,
+        "StationStart": 0.0,
+        "Persist": false
+      }
+    },
+    {
+      "node": "ORProfileFromPIsNode",
+      "inputs": {
+        "AlignmentHandle": "ALN_SAMPLE",
+        "Name": "FG_Profile",
+        "VerticalPIs": [[0, 100], [120, 102.4], [240, 101.2]],
+        "VerticalCurves": [
+          {"Type": "Parabola", "Length": 60.0, "IsCrest": true}
+        ],
+        "Persist": false
+      }
+    },
+    {
+      "node": "DebugReRun",
+      "description": "Execute alignment/profile creation twice with same Existing IDs; verify same IDs are returned and no duplicate persisted objects are created."
+    }
+  ]
+}
