@@ -82,6 +82,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Bentley.GeometryNET.Structs.dll</HintPath>
     </Reference>
+    <Reference Include="FastExcel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastExcel.3.0.13\lib\netstandard2.0\FastExcel.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -104,6 +107,9 @@
     <Compile Include="src\Nodes\ORCrossSectionGeometryNode.cs" />
     <Compile Include="src\Nodes\ORCrossSectionSheetLayoutNode.cs" />
     <Compile Include="src\Utilities\OpenRoadsHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
