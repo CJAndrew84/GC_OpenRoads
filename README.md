@@ -17,10 +17,10 @@ This is a Generative Components add-on that gives me a parametric workflow for:
 
 ## Why I Built It
 
-If you've done this manually, you know the pain:
-- extracting sections station by station,
-- calculating cut/fill outside the model,
-- hand-building annotation tables,
+If you've used the native OpenRoads Designer tools for Drawing Production, you know the pain:
+- creating sections from named boundaries is slow,
+- graphics are dynamic but annotation isnt,
+- exporting for others to use (DWG) is a pain,
 - and then redoing all of it after a design change.
 
 I wanted one graph where I can change interval, limits, scale, or layout and have everything update.
