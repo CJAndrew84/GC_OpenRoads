@@ -186,40 +186,40 @@ Use only the parts you need in a given graph.
 
 | Node | Category | Technique | Description |
 |---|---|---|---|
-| `GCIFC` | {CoDe} GC IFC | `IfcDatabase` (default) | Create IFC database by release |
-| `GCIFC` | {CoDe} GC IFC | `SetSite` | Define `IfcSite` |
-| `GCIFC` | {CoDe} GC IFC | `SetProject` | Define `IfcProject` |
-| `GCIFC` | {CoDe} GC IFC | `IFCContent` | Populate corridor geometry/content |
-| `GCIFC` | {CoDe} GC IFC | `SaveIFC` | Save IFC output file |
+| `GCIFC` | GC IFC | `IfcDatabase` (default) | Create IFC database by release |
+| `GCIFC` | GC IFC | `SetSite` | Define `IfcSite` |
+| `GCIFC` | GC IFC | `SetProject` | Define `IfcProject` |
+| `GCIFC` | GC IFC | `IFCContent` | Populate corridor geometry/content |
+| `GCIFC` | GC IFC | `SaveIFC` | Save IFC output file |
 
 ### GC.JSON
 
 | Node | Category | Technique | Description |
 |---|---|---|---|
-| `JSON` | {CoDe} GC Add-in | `ReadFile` (default) | Read JSON top-level names/values/item count |
-| `JSON` | {CoDe} GC Add-in | `ReadTable` | Read array-of-objects to headers + rows |
-| `JSON` | {CoDe} GC Add-in | `ExtractColumn` | Extract one property from all items |
-| `JSON` | {CoDe} GC Add-in | `QueryPath` | Execute JSONPath and return matches |
+| `JSON` | GC Add-in | `ReadFile` (default) | Read JSON top-level names/values/item count |
+| `JSON` | GC Add-in | `ReadTable` | Read array-of-objects to headers + rows |
+| `JSON` | GC Add-in | `ExtractColumn` | Extract one property from all items |
+| `JSON` | GC Add-in | `QueryPath` | Execute JSONPath and return matches |
 
 ### GC.Lists
 
 | Node | Category | Description |
 |---|---|---|
 | `ListFilter` | GC Lists | Filter `string[]` with `bool[]` mask |
-| `SplitList` | {CoDe} GC Lists | Split list at index |
+| `SplitList` | GC Lists | Split list at index |
 | `GroupBy` | GC Lists | Group 2D rows by selected column |
 
 ### GCItemTypes
 
 | Node | Category | Technique | Description |
 |---|---|---|---|
-| `GCItemTypes` | {CoDe} GC Add-in | `GetItemTypeInfo` (default) | Inspect Item Type and list properties |
-| `GCItemTypes` | {CoDe} GC Add-in | `ReadItems` | Read Item Type values |
-| `GCItemTypes` | {CoDe} GC Add-in | `WriteItems` | Attach type + write values |
-| `GCItemTypes` | {CoDe} GC Add-in | `WriteItemsMultipleValues` | Write per-element values from 2D array |
-| `GCItemTypes` | {CoDe} GC Add-in | `WriteCounterItems` | Write formatted incrementing values |
-| `GCItemTypes` | {CoDe} GC Add-in | `AttachItems` | Attach type only |
-| `GCItemTypes` | {CoDe} GC Add-in | `AttachMultipleItems` | Attach multiple types |
+| `GCItemTypes` | GC Add-in | `GetItemTypeInfo` (default) | Inspect Item Type and list properties |
+| `GCItemTypes` | GC Add-in | `ReadItems` | Read Item Type values |
+| `GCItemTypes` | GC Add-in | `WriteItems` | Attach type + write values |
+| `GCItemTypes` | GC Add-in | `WriteItemsMultipleValues` | Write per-element values from 2D array |
+| `GCItemTypes` | GC Add-in | `WriteCounterItems` | Write formatted incrementing values |
+| `GCItemTypes` | GC Add-in | `AttachItems` | Attach type only |
+| `GCItemTypes` | GC Add-in | `AttachMultipleItems` | Attach multiple types |
 
 ---
 
@@ -251,7 +251,7 @@ Use only the parts you need in a given graph.
    - `GC.Lists.dll`
    - `GC.ItemTypes.dll`
 4. Start OpenRoads Designer and open Generative Components.
-5. Node groups should appear under **ORD**, **GC Excel**, **{CoDe} GC IFC**, **{CoDe} GC Add-in**, and **GC Lists**.
+5. Node groups should appear under **ORD**, **GC Excel**, **GC IFC**, **GC Add-in**, and **GC Lists**.
 
 ---
 

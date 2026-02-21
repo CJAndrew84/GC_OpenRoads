@@ -11,8 +11,8 @@ using BGCscriptEd = Bentley.GenerativeComponents.ScriptEditor;
 
 namespace Atom.BentleyOpenRoads.GC
 {
-    [GCNamespace("CoDe")]
-    [GCNodeTypePaletteCategory("{CoDe} GC Add-in")]
+    [GCNamespace("GC")]
+    [GCNodeTypePaletteCategory("GC Add-in")]
     [GCNodeTypeIcon("Resources/json.png")]
     [GCSummary("Read and process any JSON file dynamically. Supports top-level inspection, " +
                "table extraction from arrays, single-column extraction, and JSONPath queries. " +
