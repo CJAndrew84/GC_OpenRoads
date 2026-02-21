@@ -144,5 +144,133 @@ namespace GenDes_OpenRoads.Nodes
 
             return NodeUpdateResult.Success;
         }
+
+        [GCTechnique]
+        [GCSummary("Computes sheet positions like ComputeLayout and additionally maps each section to either one shared drawing model or one model per section.")]
+        [GCParameter("AllSections",              "Section data list from ORCrossSectionData node.")]
+        [GCParameter("SheetWidth",               "Sheet width in master units, e.g. 594 for A1.")]
+        [GCParameter("SheetHeight",              "Sheet height in master units, e.g. 420 for A1.")]
+        [GCParameter("ColumnsPerSheet",          "Number of section columns per sheet.")]
+        [GCParameter("RowsPerColumn",            "Number of sections per column.")]
+        [GCParameter("MarginLeft",               "Left margin (master units).")]
+        [GCParameter("MarginRight",              "Right margin (master units).")]
+        [GCParameter("MarginTop",                "Top margin (master units).")]
+        [GCParameter("MarginBottom",             "Bottom margin (master units).")]
+        [GCParameter("GapHorizontal",            "Horizontal gap between section cells (master units).")]
+        [GCParameter("GapVertical",              "Vertical gap between section cells (master units).")]
+        [GCParameter("HorizontalScale",          "Horizontal scale denominator, e.g. 200 for 1:200.")]
+        [GCParameter("VerticalExaggerationFactor","VE factor — must match ORCrossSectionGeometry nodes.")]
+        [GCParameter("AnnotationBandHeight",     "Height reserved below each profile for the annotation band.")]
+        [GCParameter("ModelNamePrefix",          "Prefix used when generating drawing model names.")]
+        [GCParameter("UseOneModelPerSection",    "False: all sections in one model; True: one model per section.")]
+        [GCParameter("TotalSheets",              "Number of sheets required.")]
+        [GCParameter("CellWidth",                "Width of each section cell (master units).")]
+        [GCParameter("CellProfileHeight",        "Profile-only height of each cell (above the band).")]
+        [GCParameter("CellTotalHeight",          "Total cell height including annotation band.")]
+        [GCParameter("SectionOriginX",           "Sheet X for each section's profile datum.")]
+        [GCParameter("SectionOriginY",           "Sheet Y for each section's profile datum (bottom of profile, top of band).")]
+        [GCParameter("AnnotationBandTopY",       "Y of annotation band top for each section.")]
+        [GCParameter("SectionSheetIndex",        "0-based sheet index for each section.")]
+        [GCParameter("StationLabels",            "Station label strings in sheet order.")]
+        [GCParameter("ScaleLabel",               "Human-readable scale description.")]
+        [GCParameter("SectionModelIndex",        "For each section, drawing-model index to use.")]
+        [GCParameter("ModelNames",               "Drawing model names to create/use.")]
+        [GCParameter("ModelCount",               "Number of unique drawing models required.")]
+        public NodeUpdateResult ComputeLayoutByModelMode
+        (
+            NodeUpdateContext updateContext,
+            [GCIn]  CrossSectionData[] AllSections,
+            [GCIn]  double             SheetWidth,
+            [GCIn]  double             SheetHeight,
+            [GCIn]  int                ColumnsPerSheet,
+            [GCIn]  int                RowsPerColumn,
+            [GCIn]  double             MarginLeft,
+            [GCIn]  double             MarginRight,
+            [GCIn]  double             MarginTop,
+            [GCIn]  double             MarginBottom,
+            [GCIn]  double             GapHorizontal,
+            [GCIn]  double             GapVertical,
+            [GCIn]  double             HorizontalScale,
+            [GCIn]  double             VerticalExaggerationFactor,
+            [GCIn]  double             AnnotationBandHeight,
+            [GCIn]  string             ModelNamePrefix,
+            [GCIn]  bool               UseOneModelPerSection,
+            [GCOut, GCInitiallyPinned] ref int      TotalSheets,
+            [GCOut, GCInitiallyPinned] ref double   CellWidth,
+            [GCOut, GCInitiallyPinned] ref double   CellProfileHeight,
+            [GCOut, GCInitiallyPinned] ref double   CellTotalHeight,
+            [GCOut, GCInitiallyPinned] ref double[] SectionOriginX,
+            [GCOut, GCInitiallyPinned] ref double[] SectionOriginY,
+            [GCOut, GCInitiallyPinned] ref double[] AnnotationBandTopY,
+            [GCOut, GCInitiallyPinned] ref int[]    SectionSheetIndex,
+            [GCOut, GCInitiallyPinned] ref string[] StationLabels,
+            [GCOut, GCInitiallyPinned] ref string   ScaleLabel,
+            [GCOut, GCInitiallyPinned] ref int[]    SectionModelIndex,
+            [GCOut, GCInitiallyPinned] ref string[] ModelNames,
+            [GCOut, GCInitiallyPinned] ref int      ModelCount
+        )
+        {
+            var result = ComputeLayout(
+                updateContext,
+                AllSections,
+                SheetWidth,
+                SheetHeight,
+                ColumnsPerSheet,
+                RowsPerColumn,
+                MarginLeft,
+                MarginRight,
+                MarginTop,
+                MarginBottom,
+                GapHorizontal,
+                GapVertical,
+                HorizontalScale,
+                VerticalExaggerationFactor,
+                AnnotationBandHeight,
+                ref TotalSheets,
+                ref CellWidth,
+                ref CellProfileHeight,
+                ref CellTotalHeight,
+                ref SectionOriginX,
+                ref SectionOriginY,
+                ref AnnotationBandTopY,
+                ref SectionSheetIndex,
+                ref StationLabels,
+                ref ScaleLabel);
+
+            if (result != NodeUpdateResult.Success)
+                return result;
+
+            var prefix = string.IsNullOrWhiteSpace(ModelNamePrefix) ? "XS" : ModelNamePrefix.Trim();
+            int count = AllSections?.Length ?? 0;
+
+            if (!UseOneModelPerSection)
+            {
+                ModelCount = count > 0 ? 1 : 0;
+                ModelNames = ModelCount == 1 ? new[] { prefix } : Array.Empty<string>();
+                SectionModelIndex = Enumerable.Repeat(0, count).ToArray();
+                return NodeUpdateResult.Success;
+            }
+
+            ModelCount = count;
+            ModelNames = new string[count];
+            SectionModelIndex = new int[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                SectionModelIndex[i] = i;
+                string station = AllSections[i]?.StationLabel;
+                if (string.IsNullOrWhiteSpace(station))
+                    station = $"{i + 1}";
+
+                var safeStation = new string(station.Select(ch => char.IsLetterOrDigit(ch) ? ch : '_').ToArray()).Trim('_');
+                if (string.IsNullOrWhiteSpace(safeStation))
+                    safeStation = $"{i + 1}";
+
+                ModelNames[i] = $"{prefix}_{safeStation}";
+            }
+
+            return NodeUpdateResult.Success;
+        }
+
     }
 }

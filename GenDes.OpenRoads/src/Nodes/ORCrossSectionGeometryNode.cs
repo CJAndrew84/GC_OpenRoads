@@ -109,6 +109,9 @@ namespace GenDes_OpenRoads.Nodes
         {
             try
             {
+                if (DrawingModel == null)
+                    return new NodeUpdateResult.IncompleteInputs(nameof(DrawingModel));
+
                 if (SectionData == null || SectionData.Points.Count == 0)
                     return new NodeUpdateResult.IncompleteInputs(nameof(SectionData));
 
@@ -634,7 +637,17 @@ namespace GenDes_OpenRoads.Nodes
             {
                 if (designPts.Length >= 2) new LineStringElement(DrawingModel, null, designPts).AddToModel();
                 if (existingPts.Length >= 2) new LineStringElement(DrawingModel, null, existingPts).AddToModel();
-                if (datumPts.Length == 2) new LineElement(DrawingModel, null, new Bentley.GeometryNET.DSegment3d(new Bentley.GeometryNET.DPoint3d(clX, datumY - 10, 0), new Bentley.GeometryNET.DPoint3d(clX, datumY + 10, 0))).AddToModel();
+                if (datumPts.Length == 2)
+                    new LineElement(DrawingModel, null, new Bentley.GeometryNET.DSegment3d(datumPts[0], datumPts[1])).AddToModel();
+
+                // Short centreline tick at datum
+                new LineElement(
+                    DrawingModel,
+                    null,
+                    new Bentley.GeometryNET.DSegment3d(
+                        new Bentley.GeometryNET.DPoint3d(clX, datumY - 10, 0),
+                        new Bentley.GeometryNET.DPoint3d(clX, datumY + 10, 0)))
+                    .AddToModel();
 
                 for (int i = 0; i + 1 < tickPts.Length; i += 2)
                     new LineElement(DrawingModel, null, new Bentley.GeometryNET.DSegment3d(tickPts[i], tickPts[i + 1])).AddToModel();
