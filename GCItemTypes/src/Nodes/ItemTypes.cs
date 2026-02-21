@@ -23,8 +23,8 @@ namespace Atom.BentleyOpenRoads.GC
     using EECC = ExpressionEditorCustomConfiguration;
     using EECCAttr = GCExpressionEditorCustomConfigurationAttribute;
 
-    [GCNamespace("CoDe")]
-    [GCNodeTypePaletteCategory("{CoDe} GC Add-in")]
+    [GCNamespace("GC")]
+    [GCNodeTypePaletteCategory("GC Add-in")]
     [GCNodeTypeIcon("Resources/ItemTypes.png")]
     [GCSummary("Read, attach and update item properties on elements")]
     [GCHideInheritedTechniques]

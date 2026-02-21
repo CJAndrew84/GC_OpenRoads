@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace Atom.BentleyOpenRoads.GC
 {
     [GCNamespace("List")]
-    [GCNodeTypePaletteCategory("{CoDe} GC Lists")]
+    [GCNodeTypePaletteCategory("GC Lists")]
     [GCNodeTypeIcon("Resources/SplitList.png")]
     [GCHideInheritedTechniques]
     public class SplitList : UtilityNode

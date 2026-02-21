@@ -20,8 +20,8 @@ namespace Atom.BentleyOpenRoads.GC
     //using static Bentley.GeometryNET.Polynomials;
     using EECC = ExpressionEditorCustomConfiguration;
 
-    [GCNamespace("CoDeIFC")]
-    [GCNodeTypePaletteCategory("{CoDe} GC IFC")]
+    [GCNamespace("GCIFC")]
+    [GCNodeTypePaletteCategory("GC IFC")]
     [GCNodeTypeIcon("Resources/ifc.png")]
     [GCHideInheritedTechniques]
     [GCSummary("Define and generate IFCs")]
