@@ -5,7 +5,9 @@ I built **{Gen:Des}_OpenRoads** to remove the repetitive parts of corridor cross
 This is a Generative Components add-on that gives me a parametric workflow for:
 - corridor and alignment resolution,
 - cross-section extraction,
-- annotation + sheet layout,
+- annotation + sheet layout.
+
+Additional Projects for importing and exporting data also included:
 - IFC export,
 - Excel I/O,
 - JSON querying,
