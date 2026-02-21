@@ -13,7 +13,7 @@ This is a Generative Components add-on that gives me a parametric workflow for:
 
 > Developed by Chris Andrew
 
-> Acknowledgement: Special thanks to **Edward Ashbolt** and the [**GC Community Repo**](https://github.com/edashbolt/generative-components) for the inspiration and for helping me get started with the Item Types node.
+> Acknowledgement: Special thanks to **Edward Ashbolt** and the [**GC Community Repo**](https://github.com/edashbolt/generative-components) for the inspiration and for starting an Item Types Node that allow me to extend to what is in this repo.
 
 ---
 
