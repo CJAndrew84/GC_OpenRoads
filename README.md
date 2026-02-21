@@ -1,6 +1,6 @@
-# GC_OpenRoads
+# {Gen:Des}_OpenRoads
 
-I built **GC_OpenRoads** to remove the repetitive parts of corridor cross-section production in **Bentley OpenRoads Designer 2025**.
+I built **{Gen:Des}_OpenRoads** to remove the repetitive parts of corridor cross-section production in **Bentley OpenRoads Designer 2025**.
 
 This is a Generative Components add-on that gives me a parametric workflow for:
 - corridor and alignment resolution,
@@ -29,7 +29,7 @@ I wanted one graph where I can change interval, limits, scale, or layout and hav
 
 ## What This Add-On Does
 
-GC_OpenRoads runs as a node set inside Generative Components in OpenRoads 2025.
+{Gen:Des}_OpenRoads runs as a node set inside Generative Components in OpenRoads 2025.
 
 The core idea is simple: define the alignment/corridor once, then drive downstream geometry, data, annotation, and sheets from that source. The same graph can also push/pull Excel data, query JSON, export IFC, and read/write Item Types.
 
@@ -41,12 +41,12 @@ The solution is split into six assemblies:
 
 | Module | Assembly | Purpose |
 |---|---|---|
-| `GC.OpenRoads` | `GC.OpenRoads.dll` | Core cross-section workflow |
-| `GC.Excel` | `GC.Excel.dll` | Excel read/write helpers |
-| `GC.IFC` | `GC.IFC.dll` | Corridor IFC export |
-| `GC.JSON` | `GC.JSON.dll` | JSON file/table/path queries |
-| `GC.Lists` | `GC.Lists.dll` | Utility list operations |
-| `GCItemTypes` | `GC.ItemTypes.dll` | Item Type read/write/attach |
+| `GenDes.OpenRoads` | `GenDes.OpenRoads.dll` | Core cross-section workflow |
+| `GenDes.Excel` | `GenDes.Excel.dll` | Excel read/write helpers |
+| `GenDes.IFC` | `GenDes.IFC.dll` | Corridor IFC export |
+| `GenDes.JSON` | `GenDes.JSON.dll` | JSON file/table/path queries |
+| `GenDes.Lists` | `GenDes.Lists.dll` | Utility list operations |
+| `GenDesItemTypes` | `GenDes.ItemTypes.dll` | Item Type read/write/attach |
 
 ---
 
@@ -147,15 +147,15 @@ ORCrossSectionSheetLayoutNode
 Other node groups:
 
 ```text
-GCExcel ──► ReadExcel / WriteExcel
+GenDesExcel ──► ReadExcel / WriteExcel
 
-GCIFC ──► IfcDatabase ──► SetSite ──► SetProject ──► IFCContent ──► SaveIFC
+GenDesIFC ──► IfcDatabase ──► SetSite ──► SetProject ──► IFCContent ──► SaveIFC
 
 JSON ──► ReadFile / ReadTable / ExtractColumn / QueryPath
 
 ListFilter / SplitList / GroupBy
 
-GCItemTypes ──► GetItemTypeInfo / ReadItems / WriteItems / AttachItems
+GenDesItemTypes ──► GetItemTypeInfo / ReadItems / WriteItems / AttachItems
 ```
 
 Use only the parts you need in a given graph.
@@ -164,7 +164,7 @@ Use only the parts you need in a given graph.
 
 ## Node Reference
 
-### GC.OpenRoads — Cross-Section Workflow
+### {Gen:Des} OpenRoads — Cross-Section Workflow
 
 | Node | Category | Description |
 |---|---|---|
@@ -175,51 +175,51 @@ Use only the parts you need in a given graph.
 | `ORAnnotationBandNode` | OpenRoads - Cross Sections | Build section annotation tables |
 | `ORCrossSectionSheetLayoutNode` | OpenRoads - Drawing Production | Place sections across sheet layout |
 
-### GC.Excel
+### {Gen:Des} Excel
 
 | Node | Category | Technique | Description |
 |---|---|---|---|
-| `GCExcel` | GC Excel | `ReadExcel` (default) | Read worksheet range into a 2D array |
-| `GCExcel` | GC Excel | `WriteExcel` | Write a 2D array into a worksheet |
+| `GenDesExcel` | {Gen:Des} Excel | `ReadExcel` (default) | Read worksheet range into a 2D array |
+| `GenDesExcel` | {Gen:Des} Excel | `WriteExcel` | Write a 2D array into a worksheet |
 
-### GC.IFC
-
-| Node | Category | Technique | Description |
-|---|---|---|---|
-| `GCIFC` | GC IFC | `IfcDatabase` (default) | Create IFC database by release |
-| `GCIFC` | GC IFC | `SetSite` | Define `IfcSite` |
-| `GCIFC` | GC IFC | `SetProject` | Define `IfcProject` |
-| `GCIFC` | GC IFC | `IFCContent` | Populate corridor geometry/content |
-| `GCIFC` | GC IFC | `SaveIFC` | Save IFC output file |
-
-### GC.JSON
+### {Gen:Des} IFC
 
 | Node | Category | Technique | Description |
 |---|---|---|---|
-| `JSON` | GC Add-in | `ReadFile` (default) | Read JSON top-level names/values/item count |
-| `JSON` | GC Add-in | `ReadTable` | Read array-of-objects to headers + rows |
-| `JSON` | GC Add-in | `ExtractColumn` | Extract one property from all items |
-| `JSON` | GC Add-in | `QueryPath` | Execute JSONPath and return matches |
+| `GenDesIFC` | {Gen:Des} IFC | `IfcDatabase` (default) | Create IFC database by release |
+| `GenDesIFC` | {Gen:Des} IFC | `SetSite` | Define `IfcSite` |
+| `GenDesIFC` | {Gen:Des} IFC | `SetProject` | Define `IfcProject` |
+| `GenDesIFC` | {Gen:Des} IFC | `IFCContent` | Populate corridor geometry/content |
+| `GenDesIFC` | {Gen:Des} IFC | `SaveIFC` | Save IFC output file |
 
-### GC.Lists
+### {Gen:Des} JSON
+
+| Node | Category | Technique | Description |
+|---|---|---|---|
+| `JSON` | {Gen:Des} Add-in | `ReadFile` (default) | Read JSON top-level names/values/item count |
+| `JSON` | {Gen:Des} Add-in | `ReadTable` | Read array-of-objects to headers + rows |
+| `JSON` | {Gen:Des} Add-in | `ExtractColumn` | Extract one property from all items |
+| `JSON` | {Gen:Des} Add-in | `QueryPath` | Execute JSONPath and return matches |
+
+### {Gen:Des} Lists
 
 | Node | Category | Description |
 |---|---|---|
-| `ListFilter` | GC Lists | Filter `string[]` with `bool[]` mask |
-| `SplitList` | GC Lists | Split list at index |
-| `GroupBy` | GC Lists | Group 2D rows by selected column |
+| `ListFilter` | {Gen:Des} Lists | Filter `string[]` with `bool[]` mask |
+| `SplitList` | {Gen:Des} Lists | Split list at index |
+| `GroupBy` | {Gen:Des} Lists | Group 2D rows by selected column |
 
-### GCItemTypes
+### {Gen:Des} Item Types
 
 | Node | Category | Technique | Description |
 |---|---|---|---|
-| `GCItemTypes` | GC Add-in | `GetItemTypeInfo` (default) | Inspect Item Type and list properties |
-| `GCItemTypes` | GC Add-in | `ReadItems` | Read Item Type values |
-| `GCItemTypes` | GC Add-in | `WriteItems` | Attach type + write values |
-| `GCItemTypes` | GC Add-in | `WriteItemsMultipleValues` | Write per-element values from 2D array |
-| `GCItemTypes` | GC Add-in | `WriteCounterItems` | Write formatted incrementing values |
-| `GCItemTypes` | GC Add-in | `AttachItems` | Attach type only |
-| `GCItemTypes` | GC Add-in | `AttachMultipleItems` | Attach multiple types |
+| `GenDesItemTypes` | {Gen:Des} Add-in | `GetItemTypeInfo` (default) | Inspect Item Type and list properties |
+| `GenDesItemTypes` | {Gen:Des} Add-in | `ReadItems` | Read Item Type values |
+| `GenDesItemTypes` | {Gen:Des} Add-in | `WriteItems` | Attach type + write values |
+| `GenDesItemTypes` | {Gen:Des} Add-in | `WriteItemsMultipleValues` | Write per-element values from 2D array |
+| `GenDesItemTypes` | {Gen:Des} Add-in | `WriteCounterItems` | Write formatted incrementing values |
+| `GenDesItemTypes` | {Gen:Des} Add-in | `AttachItems` | Attach type only |
+| `GenDesItemTypes` | {Gen:Des} Add-in | `AttachMultipleItems` | Attach multiple types |
 
 ---
 
@@ -230,34 +230,34 @@ Use only the parts you need in a given graph.
 | Bentley OpenRoads Designer | 2025.00 |
 | Generative Components | Included with OpenRoads 2025 |
 | .NET Framework | 4.8.1 |
-| FastExcel | NuGet (GC.Excel) |
-| Newtonsoft.Json | NuGet (GC.JSON) |
-| GeometryGym.IFC | NuGet (GC.IFC) |
+| FastExcel | NuGet (GenDes.Excel) |
+| Newtonsoft.Json | NuGet (GenDes.JSON) |
+| GeometryGym.IFC | NuGet (GenDes.IFC) |
 
 ---
 
 ## Installation
 
-1. Build `GC_OpenRoads.slnx` in Visual Studio.
+1. Build `GenDes_OpenRoads.slnx` in Visual Studio.
 2. Copy built assemblies into:
    ```
    C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\
    ```
 3. Deploy these DLLs:
-   - `GC.OpenRoads.dll`
-   - `GC.Excel.dll`
-   - `GC.IFC.dll`
-   - `GC.JSON.dll`
-   - `GC.Lists.dll`
-   - `GC.ItemTypes.dll`
+   - `GenDes.OpenRoads.dll`
+   - `GenDes.Excel.dll`
+   - `GenDes.IFC.dll`
+   - `GenDes.JSON.dll`
+   - `GenDes.Lists.dll`
+   - `GenDes.ItemTypes.dll`
 4. Start OpenRoads Designer and open Generative Components.
-5. Node groups should appear under **ORD**, **GC Excel**, **GC IFC**, **GC Add-in**, and **GC Lists**.
+5. Node groups should appear under **ORD**, **{Gen:Des} Excel**, **{Gen:Des} IFC**, **{Gen:Des} Add-in**, and **{Gen:Des} Lists**.
 
 ---
 
 ## Quick Comparison
 
-| Without this add-on | With GC_OpenRoads |
+| Without this add-on | With {Gen:Des}_OpenRoads |
 |---|---|
 | Manual station-by-station extraction | Bulk extraction at chosen intervals |
 | Spreadsheet cut/fill workflows | Automated cut/fill + volume output |

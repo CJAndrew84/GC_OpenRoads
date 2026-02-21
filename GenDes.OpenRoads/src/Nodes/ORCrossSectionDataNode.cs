@@ -2,14 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Bentley.GenerativeComponents;
 using Bentley.GenerativeComponents.AddInSupport;
 using Bentley.GenerativeComponents.GCScript;
 using Bentley.GenerativeComponents.ElementBasedNodes;
 using Bentley.GenerativeComponents.GCScript.GCTypes;
 using Bentley.GenerativeComponents.GeneralPurpose.Collections;
+using Bentley.GenerativeComponents.View;
 using BDPnet = Bentley.DgnPlatformNET;
 using Bentley.MstnPlatformNET;
 using Bentley.CifNET.GeometryModel.SDK;
+using Bentley.GeometryNET;
 using GenDes_OpenRoads_CrossSections.Models;
 using GenDes_OpenRoads.Utilities;
 
@@ -37,10 +40,15 @@ namespace GenDes_OpenRoads.Nodes
         [GCParameter("EndStation",        "End chainage (metres). 0 = corridor end.")]
         [GCParameter("StationInterval",   "Distance between sections (metres). Default 10.")]
         [GCParameter("ExtraStations",     "Comma-separated extra chainages to always include.")]
+        [GCParameter("Enable3DCutElements", "If true, intersects source 3D curves with section plane at each station.")]
+        [GCParameter("SourceModelCurves", "3D source curves in world coordinates (DPoint3d[] per curve).")]
+        [GCParameter("SourceMeshTriangles", "Triangulated mesh facets (DPoint3d[3] per triangle).")]
+        [GCParameter("SourceSurfaceTriangles", "Triangulated surface facets (DPoint3d[3] per triangle).")]
+        [GCParameter("SourceSolidTriangles", "Triangulated solid shell facets (DPoint3d[3] per triangle).")]
         [GCParameter("Sections",          "Extracted section data objects.")]
         [GCParameter("SectionCount",      "Number of sections extracted.")]
-        [GCParameter("TotalCutArea",      "Sum of cut areas across all sections (m²).")]
-        [GCParameter("TotalFillArea",     "Sum of fill areas across all sections (m²).")]
+        [GCParameter("TotalCutArea",       "Sum of cut areas across all sections (m²).")]
+        [GCParameter("TotalFillArea",      "Sum of fill areas across all sections (m²).")]
         [GCParameter("CutVolumeM3",       "Average-end-area cut volume (m³).")]
         [GCParameter("FillVolumeM3",      "Average-end-area fill volume (m³).")]
         [GCParameter("CsvReport",         "All section point data as CSV text.")]
@@ -54,6 +62,11 @@ namespace GenDes_OpenRoads.Nodes
             [GCIn]  double   EndStation,
             [GCIn]  double   StationInterval,
             [GCIn]  string   ExtraStations,
+            [GCIn]  bool     Enable3DCutElements,
+            [GCIn]  DPoint3d[][] SourceModelCurves,
+            [GCIn]  DPoint3d[][] SourceMeshTriangles,
+            [GCIn]  DPoint3d[][] SourceSurfaceTriangles,
+            [GCIn]  DPoint3d[][] SourceSolidTriangles,
             [GCIn]  double   LeftWidth,
             [GCIn]  double   RightWidth,
             [GCOut, GCReplicatable, GCInitiallyPinned] ref CrossSectionData[] Sections,
@@ -97,25 +110,47 @@ namespace GenDes_OpenRoads.Nodes
                 double lw = LeftWidth  > 0 ? LeftWidth  : 50.0;
                 double rw = RightWidth > 0 ? RightWidth : 50.0;
                 var sections = OpenRoadsHelper.ExtractCrossSections(
-                    corridor, start, end, interval, lw, rw);
+                    corridor, OpenRoadsHelper.ConvertMasterToMeter(start), OpenRoadsHelper.ConvertMasterToMeter(end), OpenRoadsHelper.ConvertMasterToMeter(interval), OpenRoadsHelper.ConvertMasterToMeter(lw), OpenRoadsHelper.ConvertMasterToMeter(rw));
 
                 // Merge extra stations
                 if (!string.IsNullOrWhiteSpace(ExtraStations))
                 {
-                    foreach (var part in ExtraStations.Split(',',
-                        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                    foreach (var part in ExtraStations.Split(','))
                     {
                         if (double.TryParse(part, out double sta) && sta >= start && sta <= end)
                         {
                             var extra = OpenRoadsHelper.ExtractCrossSectionAtStation(
-                                corridor, sta, lw, rw);
+                                corridor, OpenRoadsHelper.ConvertMasterToMeter(sta), OpenRoadsHelper.ConvertMasterToMeter(lw), OpenRoadsHelper.ConvertMasterToMeter(rw));
                             if (extra != null) sections.Add(extra);
                         }
                     }
                     sections = sections
                         .OrderBy(s => s.Station)
-                        .DistinctBy(s => Math.Round(s.Station, 3))
+                        .GroupBy(s => Math.Round(s.Station, 3))
+                        .Select(g => g.First())
                         .ToList();
+                }
+
+                if (Enable3DCutElements)
+                {
+                    foreach (var s in sections)
+                    {
+                        var cutElements = new List<CrossSectionCutElement>();
+
+                        if (SourceModelCurves != null && SourceModelCurves.Length > 0)
+                            cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromCurves(s, SourceModelCurves));
+
+                        if (SourceMeshTriangles != null && SourceMeshTriangles.Length > 0)
+                            cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromMeshTriangles(s, SourceMeshTriangles));
+
+                        if (SourceSurfaceTriangles != null && SourceSurfaceTriangles.Length > 0)
+                            cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromSurfaceTriangles(s, SourceSurfaceTriangles));
+
+                        if (SourceSolidTriangles != null && SourceSolidTriangles.Length > 0)
+                            cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromSolidTriangles(s, SourceSolidTriangles));
+
+                        s.CutElements = cutElements;
+                    }
                 }
 
                 Sections      = sections.ToArray();
@@ -153,6 +188,11 @@ namespace GenDes_OpenRoads.Nodes
         [GCParameter("CorridorName",  "Corridor to sample.")]
         [GCParameter("AlignmentName", "Parent alignment (enables terrain sampling).")]
         [GCParameter("Station",       "Chainage to sample (metres).")]
+        [GCParameter("Enable3DCutElements", "If true, intersects source 3D curves with section plane.")]
+        [GCParameter("SourceModelCurves", "3D source curves in world coordinates (DPoint3d[] per curve).")]
+        [GCParameter("SourceMeshTriangles", "Triangulated mesh facets (DPoint3d[3] per triangle).")]
+        [GCParameter("SourceSurfaceTriangles", "Triangulated surface facets (DPoint3d[3] per triangle).")]
+        [GCParameter("SourceSolidTriangles", "Triangulated solid shell facets (DPoint3d[3] per triangle).")]
         [GCParameter("Section",       "Extracted section data.")]
         public NodeUpdateResult AtStation
         (
@@ -160,6 +200,11 @@ namespace GenDes_OpenRoads.Nodes
             [GCIn]  string           CorridorName,
             [GCIn]  string           AlignmentName,
             [GCIn]  double           Station,
+            [GCIn]  bool             Enable3DCutElements,
+            [GCIn]  DPoint3d[][]     SourceModelCurves,
+            [GCIn]  DPoint3d[][]     SourceMeshTriangles,
+            [GCIn]  DPoint3d[][]     SourceSurfaceTriangles,
+            [GCIn]  DPoint3d[][]     SourceSolidTriangles,
             [GCOut, GCInitiallyPinned] ref CrossSectionData Section
         )
         {
@@ -177,10 +222,29 @@ namespace GenDes_OpenRoads.Nodes
                     : OpenRoadsHelper.FindAlignment(AlignmentName);
 
                 var section = OpenRoadsHelper.ExtractCrossSectionAtStation(
-                    corridor, Station, alignment);
+                    corridor, Station, 50.0, 50.0);
 
                 if (section == null)
                     return new NodeUpdateResult.TechniqueInvalidArguments(nameof(Station));
+
+                if (Enable3DCutElements)
+                {
+                    var cutElements = new List<CrossSectionCutElement>();
+
+                    if (SourceModelCurves != null && SourceModelCurves.Length > 0)
+                        cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromCurves(section, SourceModelCurves));
+
+                    if (SourceMeshTriangles != null && SourceMeshTriangles.Length > 0)
+                        cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromMeshTriangles(section, SourceMeshTriangles));
+
+                    if (SourceSurfaceTriangles != null && SourceSurfaceTriangles.Length > 0)
+                        cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromSurfaceTriangles(section, SourceSurfaceTriangles));
+
+                    if (SourceSolidTriangles != null && SourceSolidTriangles.Length > 0)
+                        cutElements.AddRange(OpenRoadsHelper.ExtractCutElementsFromSolidTriangles(section, SourceSolidTriangles));
+
+                    section.CutElements = cutElements;
+                }
 
                 Section = section;
             }

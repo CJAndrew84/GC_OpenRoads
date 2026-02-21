@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bentley.GenerativeComponents;
 using Bentley.GenerativeComponents.AddInSupport;
 using Bentley.GenerativeComponents.GCScript;
 using Bentley.GenerativeComponents.ElementBasedNodes;
+using Bentley.GenerativeComponents.GCScript.GCTypes;
+using Bentley.GenerativeComponents.GeneralPurpose.Collections;
+using Bentley.GenerativeComponents.View;
 using Bentley.GeometryNET;
 using BDPnet = Bentley.DgnPlatformNET;
 using Bentley.MstnPlatformNET;
-using GenDes_OpenRoads.Models;
+using GenDes_OpenRoads_CrossSections.Models;
 
 namespace GenDes_OpenRoads.Nodes
 {

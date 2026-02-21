@@ -8,10 +8,10 @@ using Bentley.DgnPlatformNET.Elements;
 using Bentley.GeometryNET;
 using Bentley.MstnPlatformNET;
 using BDPnet = Bentley.DgnPlatformNET;
-using GC_OpenRoads_CrossSections.Models;
-using GC_OpenRoads.Utilities;
+using GenDes_OpenRoads_CrossSections.Models;
+using GenDes_OpenRoads.Utilities;
 
-namespace GC_OpenRoads.Nodes
+namespace GenDes_OpenRoads.Nodes
 {
     [GCNamespace("ORD")]
     [GCNodeTypePaletteCategory("OpenRoads - Cross Sections")]

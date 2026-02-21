@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="GenDes.Excel/GenDes.Excel.csproj" Id="ff6c1a36-b948-45aa-a209-3c049f69bddf" />
+  <Project Path="GenDes.IFC/GenDes.IFC.csproj" Id="8f15ba5e-e150-4191-ba82-72cf17afe3d4" />
+  <Project Path="GenDes.JSON/GenDes.JSON.csproj" Id="b0f64844-f938-4e3c-bb31-44266a89187c" />
+  <Project Path="GenDes.Lists/GenDes.Lists.csproj" Id="ed5f0eef-951f-4609-8cc6-de6f21f83e8e" />
+  <Project Path="GenDes.OpenRoads/GenDes.OpenRoads.csproj" Id="04318d68-0148-4555-b96b-5801016d4708" />
+  <Project Path="GenDesItemTypes/GenDes.ItemTypes.csproj" Id="092ec152-3fb6-4f9a-8d33-7d7fd68e0a0f" />
+</Solution>

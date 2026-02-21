@@ -1,8 +1,12 @@
 using System;
 using System.Linq;
+using Bentley.GenerativeComponents;
 using Bentley.GenerativeComponents.AddInSupport;
 using Bentley.GenerativeComponents.GCScript;
 using Bentley.GenerativeComponents.ElementBasedNodes;
+using Bentley.GenerativeComponents.GCScript.GCTypes;
+using Bentley.GenerativeComponents.GeneralPurpose.Collections;
+using Bentley.GenerativeComponents.View;
 using BDPnet = Bentley.DgnPlatformNET;
 using Bentley.MstnPlatformNET;
 using Bentley.CifNET.GeometryModel.SDK;
@@ -40,7 +44,7 @@ namespace GenDes_OpenRoads.Nodes
         {
             try
             {
-                using var con = OpenRoadsHelper.GetReadConnection();
+                using var con = OpenRoadsHelper.GetActiveConnection();
                 var gm = con.GetActiveGeometricModel();
                 AvailableCorridors = gm?.Corridors
                                         .Select(c => c.Name ?? "")
@@ -69,11 +73,9 @@ namespace GenDes_OpenRoads.Nodes
                 }
 
                 ResolvedCorridorName = corridor.Name ?? string.Empty;
-                // CorridorAlignment.LinearGeometry.Length is in metres — convert to master units
-                double lengthMaster = OpenRoadsHelper.ConvertMeterToMaster(
-                    corridor.CorridorAlignment.LinearGeometry.Length);
-                StartStation = 0.0;
-                EndStation   = lengthMaster;
+                
+                StartStation = corridor.StartDistance;
+                EndStation   = corridor.EndDistance;
             }
             catch (Exception ex)
             {
