@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Atom.BentleyOpenRoads.GenDes
+namespace GenDes.ItemTypes
 {
     using EECC = ExpressionEditorCustomConfiguration;
     using EECCAttr = GCExpressionEditorCustomConfigurationAttribute;

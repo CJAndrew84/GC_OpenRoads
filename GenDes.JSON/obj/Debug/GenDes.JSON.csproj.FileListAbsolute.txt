@@ -1,0 +1,7 @@
+C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\GenDes.JSON.dll
+C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\GenDes.JSON.pdb
+C:\Repos\GC_OpenRoads\GenDes.JSON\obj\Debug\GenDes.JSON.csproj.AssemblyReference.cache
+C:\Repos\GC_OpenRoads\GenDes.JSON\obj\Debug\GenDes.JSON.csproj.CoreCompileInputs.cache
+C:\Repos\GC_OpenRoads\GenDes.JSON\obj\Debug\GenDes.J.990686D2.Up2Date
+C:\Repos\GC_OpenRoads\GenDes.JSON\obj\Debug\GenDes.JSON.dll
+C:\Repos\GC_OpenRoads\GenDes.JSON\obj\Debug\GenDes.JSON.pdb

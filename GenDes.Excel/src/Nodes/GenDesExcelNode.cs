@@ -11,7 +11,7 @@ using Bentley.GenerativeComponents.GeneralPurpose;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace GenDes_OpenRoads.Nodes
+namespace GenDes.Excel
 {
     [GCNamespace("Excel")]
     [GCNodeTypePaletteCategory("{Gen:Des} Excel")]

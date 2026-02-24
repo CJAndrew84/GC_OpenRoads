@@ -1,0 +1,7 @@
+C:\Repos\GC_OpenRoads\GenDesItemTypes\obj\Debug\GenDes.ItemTypes.csproj.AssemblyReference.cache
+C:\Repos\GC_OpenRoads\GenDesItemTypes\obj\Debug\GenDes.ItemTypes.csproj.CoreCompileInputs.cache
+C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\GenDesItemTypes.dll
+C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\GenDesItemTypes.pdb
+C:\Repos\GC_OpenRoads\GenDesItemTypes\obj\Debug\GenDes.I.19C24603.Up2Date
+C:\Repos\GC_OpenRoads\GenDesItemTypes\obj\Debug\GenDesItemTypes.dll
+C:\Repos\GC_OpenRoads\GenDesItemTypes\obj\Debug\GenDesItemTypes.pdb

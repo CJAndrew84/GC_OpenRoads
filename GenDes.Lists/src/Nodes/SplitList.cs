@@ -8,7 +8,7 @@ using Bentley.GenerativeComponents.UtilityNodes;
 using Bentley.GenerativeComponents.View;
 using System.Collections.Generic;
 
-namespace Atom.BentleyOpenRoads.GenDes
+namespace GenDes.Lists
 {
     [GCNamespace("List")]
     [GCNodeTypePaletteCategory("{Gen:Des} Lists")]

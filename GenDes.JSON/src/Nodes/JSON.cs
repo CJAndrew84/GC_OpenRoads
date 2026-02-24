@@ -2,14 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Bentley.GenerativeComponents;
 using Bentley.GenerativeComponents.AddInSupport;
+using Bentley.GenerativeComponents.ElementBasedNodes;
 using Bentley.GenerativeComponents.GCScript;
+using Bentley.GenerativeComponents.GCScript.GCTypes;
+using Bentley.GenerativeComponents.GCScript.ReflectedNativeTypeSupport;
+using Bentley.GenerativeComponents.GeneralPurpose;
+using Bentley.GenerativeComponents.UtilityNodes;
 using Bentley.GenerativeComponents.View;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using BGCscriptEd = Bentley.GenerativeComponents.ScriptEditor;
 
-namespace Atom.BentleyOpenRoads.GenDes
+namespace GenDes.JSON
 {
     [GCNamespace("GC")]
     [GCNodeTypePaletteCategory("{Gen:Des} Add-in")]

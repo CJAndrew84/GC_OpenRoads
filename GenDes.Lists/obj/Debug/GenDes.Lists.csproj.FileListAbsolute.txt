@@ -1,0 +1,6 @@
+C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\GenDes.Lists.dll
+C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\GenDes.Lists.pdb
+C:\Repos\GC_OpenRoads\GenDes.Lists\obj\Debug\GenDes.Lists.csproj.AssemblyReference.cache
+C:\Repos\GC_OpenRoads\GenDes.Lists\obj\Debug\GenDes.Lists.csproj.CoreCompileInputs.cache
+C:\Repos\GC_OpenRoads\GenDes.Lists\obj\Debug\GenDes.Lists.dll
+C:\Repos\GC_OpenRoads\GenDes.Lists\obj\Debug\GenDes.Lists.pdb

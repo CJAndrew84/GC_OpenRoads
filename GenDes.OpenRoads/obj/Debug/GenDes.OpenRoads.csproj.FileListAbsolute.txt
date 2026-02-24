@@ -1,0 +1,2 @@
+C:\Repos\GC_OpenRoads\GenDes.OpenRoads\obj\Debug\GenDes.OpenRoads.csproj.AssemblyReference.cache
+C:\Repos\GC_OpenRoads\GenDes.OpenRoads\obj\Debug\GenDes.OpenRoads.csproj.CoreCompileInputs.cache

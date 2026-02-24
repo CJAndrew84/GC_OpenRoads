@@ -1,6 +1,4 @@
-﻿using Atom.BentleyOpenRoads.Ops;
-using Atom.BentleyOpenRoads.Ops.Helpers;
-using Bentley.GenerativeComponents;
+﻿using Bentley.GenerativeComponents;
 using Bentley.GenerativeComponents.AddInSupport;
 using Bentley.GenerativeComponents.ElementBasedNodes;
 using Bentley.GenerativeComponents.GCScript;
@@ -14,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BDPnet = Bentley.DgnPlatformNET;
+using Bentley.CifNET.GeometryModel.SDK;
+using Bentley.CifNET.GeometryModel.SDK.Edit;
 
 namespace Atom.BentleyOpenRoads.GenDes
 {
@@ -48,10 +48,10 @@ namespace Atom.BentleyOpenRoads.GenDes
             }
         }
 
-        public void SetStrings(Civil.CorridorStrings strng, IfcSite ifcSite, bool isContour)
+        public void SetStrings(LinearEntity3d strng, IfcSite ifcSite, bool isContour)
         {
             int i = 0;
-            foreach (var segment in strng.Segments)
+            foreach (var segment in strng.LinearGeometry.DropLineStrings().)
             {
                 List<Tuple<double, double, double>> points = new List<Tuple<double, double, double>>();
 

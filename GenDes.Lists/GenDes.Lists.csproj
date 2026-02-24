@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,27 +33,35 @@
   <ItemGroup>
     <Reference Include="Bentley.GenerativeComponents">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.AddIn">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.AddIn.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.Base">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.Base.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.GCScript">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.GCScript.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.GeneralPurpose">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.GeneralPurpose.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.ScriptEditor">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.ScriptEditor.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.UI">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.UI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.View">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.View.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,39 +33,51 @@
   <ItemGroup>
     <Reference Include="Bentley.DgnPlatformNET">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Bentley.DgnPlatformNET.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.ECObjects3">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Assemblies\ECFramework\Bentley.ECObjects3.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.AddIn">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.AddIn.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.Base">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.Base.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.GCScript">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.GCScript.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.GeneralPurpose">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.GeneralPurpose.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.ScriptEditor">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.ScriptEditor.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.UI">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.UI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.View">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.View.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GeometryNET">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Bentley.GeometryNET.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -77,6 +89,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="ustation">
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\ustation.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

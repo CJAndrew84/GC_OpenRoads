@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -34,42 +34,56 @@
     <Reference Include="Bentley.DgnPlatformNET, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4bf6c96a266e58d4, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Bentley.DgnPlatformNET.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.ECObjects3, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4bf6c96a266e58d4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Assemblies\ECFramework\Bentley.ECObjects3.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4bf6c96a266e58d4, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.AddIn, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4bf6c96a266e58d4, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.AddIn.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.Base, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4bf6c96a266e58d4, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.Base.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.GCScript, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4bf6c96a266e58d4, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.GCScript.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.GeneralPurpose, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4bf6c96a266e58d4, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.GeneralPurpose.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.ScriptEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4bf6c96a266e58d4, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.ScriptEditor.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.UI, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4bf6c96a266e58d4, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.UI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Bentley.GenerativeComponents.View, Version=0.0.0.0, Culture=neutral, PublicKeyToken=4bf6c96a266e58d4, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.View.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Bentley.Platform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4bf6c96a266e58d4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Assemblies\ECFramework\Bentley.Platform.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -82,11 +96,13 @@
     <Reference Include="ustation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9bfed12b64a9b7df, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\ustation.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Nodes\ItemTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Utilities\ElementExtensions.cs" />
     <Compile Include="src\Utilities\ItemTypeExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

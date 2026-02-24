@@ -1,0 +1,7 @@
+C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\GenDes.Excel.dll
+C:\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\MdlApps\GenDes.Excel.pdb
+C:\Repos\GC_OpenRoads\GenDes.Excel\obj\Debug\GenDes.Excel.csproj.AssemblyReference.cache
+C:\Repos\GC_OpenRoads\GenDes.Excel\obj\Debug\GenDes.Excel.csproj.CoreCompileInputs.cache
+C:\Repos\GC_OpenRoads\GenDes.Excel\obj\Debug\GenDes.E.7142CDB2.Up2Date
+C:\Repos\GC_OpenRoads\GenDes.Excel\obj\Debug\GenDes.Excel.dll
+C:\Repos\GC_OpenRoads\GenDes.Excel\obj\Debug\GenDes.Excel.pdb

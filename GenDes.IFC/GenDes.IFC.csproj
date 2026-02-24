@@ -31,6 +31,42 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bentley.CifNET.GeometryModel.SDK.4.0">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Cif\Bentley.CifNET.GeometryModel.SDK.4.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.CifNET.GeometryModel.SDK.Edit.4.0">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Cif\Bentley.CifNET.GeometryModel.SDK.Edit.4.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.CifNET.LinearGeometry.4.0">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Cif\Bentley.CifNET.LinearGeometry.4.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.DgnPlatformNET">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\Bentley.DgnPlatformNET.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents.AddIn">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.AddIn.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents.Base">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents.GCScript">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.GCScript.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents.GeneralPurpose">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.GeneralPurpose.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents.ScriptEditor">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.ScriptEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents.UI">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Bentley.GenerativeComponents.View">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\GenerativeComponents\Assemblies\Bentley.GenerativeComponents.View.dll</HintPath>
+    </Reference>
     <Reference Include="GeometryGymIFCcore, Version=25.7.30.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GeometryGymIFC_Core.25.7.30\lib\netstandard2.0\GeometryGymIFCcore.dll</HintPath>
     </Reference>
@@ -45,6 +81,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="ustation">
+      <HintPath>..\..\..\Program Files\Bentley\OpenRoads Designer 2025.00\OpenRoadsDesigner\ustation.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Nodes\IFC.cs" />
