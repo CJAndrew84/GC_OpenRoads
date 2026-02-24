@@ -9,7 +9,7 @@ using Bentley.GenerativeComponents.View;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Atom.BentleyOpenRoads.GenDes
+namespace GenDes.Lists
 {
     [GCNamespace("List")]
     [GCNodeTypePaletteCategory("{Gen:Des} Lists")]
@@ -18,17 +18,13 @@ namespace Atom.BentleyOpenRoads.GenDes
     public class GroupAndLookupByValue : UtilityNode
     {
         internal const string NameOfInputDataProperty = "InputData";
-        internal const string NameOfMatchValueProperty = "MatchValue";
-
         internal const string NameOfGroupColumnIndexProperty = "GroupColumnIndex";
         internal const string NameOfGroupReturnColumn1IndexProperty = "GroupReturnColumn1Index";
         internal const string NameOfGroupReturnColumn2IndexProperty = "GroupReturnColumn2Index";
-        internal const string NameOfGroupedResultProperty = "GroupedResult";
-
         internal const string NameOfLookupColumnIndexProperty = "LookupColumnIndex";
         internal const string NameOfLookupReturnColumn1IndexProperty = "LookupReturnColumn1Index";
         internal const string NameOfLookupReturnColumn2IndexProperty = "LookupReturnColumn2Index";
-        internal const string NameOfLookupResultProperty = "LookupResult";
+        internal const string NameOfResultProperty = "Result";
 
         static readonly NodeGCType s_gcTypeOfAllInstances = (NodeGCType)GCTypeTools.GetGCType(UniversalGCEnvironment.TheOnlyInstance, typeof(GroupAndLookupByValue));
 
@@ -43,26 +39,23 @@ namespace Atom.BentleyOpenRoads.GenDes
 
             technique1.AddParameter(environment, NameOfInputDataProperty, typeof(object[][]), null,
                 Ls.Literal("The source table as a 2D list of rows."));
-            technique1.AddParameter(environment, NameOfMatchValueProperty, typeof(string), "",
-                Ls.Literal("Value used for grouping and lookup matching."));
 
             technique1.AddParameter(environment, NameOfGroupColumnIndexProperty, typeof(int), null,
-                Ls.Literal("Column index used to group/filter rows by MatchValue."));
+                Ls.Literal("Column index containing the key value to group by."));
             technique1.AddParameter(environment, NameOfGroupReturnColumn1IndexProperty, typeof(int), null,
-                Ls.Literal("First column index to return from grouped rows."));
+                Ls.Literal("First grouped column index to return."));
             technique1.AddParameter(environment, NameOfGroupReturnColumn2IndexProperty, typeof(int), null,
-                Ls.Literal("Second column index to return from grouped rows."));
-            technique1.AddParameter(environment, NameOfGroupedResultProperty, typeof(object[][]), null,
-                Ls.Literal("Grouped rows with only the two requested return columns."), NodePortRole.TechniqueOutputOnly);
+                Ls.Literal("Second grouped column index to return."));
 
             technique1.AddParameter(environment, NameOfLookupColumnIndexProperty, typeof(int), null,
-                Ls.Literal("Column index used for lookup/filter by MatchValue."));
+                Ls.Literal("Column index to lookup the same key value."));
             technique1.AddParameter(environment, NameOfLookupReturnColumn1IndexProperty, typeof(int), null,
-                Ls.Literal("First column index to return from lookup rows."));
+                Ls.Literal("First lookup column index to return."));
             technique1.AddParameter(environment, NameOfLookupReturnColumn2IndexProperty, typeof(int), null,
-                Ls.Literal("Second column index to return from lookup rows."));
-            technique1.AddParameter(environment, NameOfLookupResultProperty, typeof(object[][]), null,
-                Ls.Literal("Lookup rows with only the two requested return columns."), NodePortRole.TechniqueOutputOnly);
+                Ls.Literal("Second lookup column index to return."));
+
+            technique1.AddParameter(environment, NameOfResultProperty, typeof(object[][]), null,
+                Ls.Literal("Rows with 5 values: [LookupValue, GroupCol1, GroupCol2, LookupCol1, LookupCol2]."), NodePortRole.TechniqueOutputOnly);
         }
 
         static NodeUpdateResult DefaultTechnique(UtilityNode node, NodeUpdateContext updateContext)
@@ -90,38 +83,55 @@ namespace Atom.BentleyOpenRoads.GenDes
             if (!IsValidColumn(currentNode.LookupReturnColumn2Index, maxColumnCount))
                 return new NodeUpdateResult.TechniqueInvalidArguments(NameOfLookupReturnColumn2IndexProperty + " Error - index is out of range");
 
-            string matchValue = currentNode.MatchValue ?? "";
+            Dictionary<string, object[]> groupedRows = BuildFirstMatchMap(inputData, currentNode.GroupColumnIndex,
+                currentNode.GroupReturnColumn1Index, currentNode.GroupReturnColumn2Index);
+            Dictionary<string, object[]> lookupRows = BuildFirstMatchMap(inputData, currentNode.LookupColumnIndex,
+                currentNode.LookupReturnColumn1Index, currentNode.LookupReturnColumn2Index);
 
-            currentNode.GroupedResult = GetTwoColumnResult(inputData, currentNode.GroupColumnIndex, matchValue, currentNode.GroupReturnColumn1Index, currentNode.GroupReturnColumn2Index);
-            currentNode.LookupResult = GetTwoColumnResult(inputData, currentNode.LookupColumnIndex, matchValue, currentNode.LookupReturnColumn1Index, currentNode.LookupReturnColumn2Index);
+            List<object[]> result = new List<object[]>();
+            foreach (KeyValuePair<string, object[]> groupEntry in groupedRows)
+            {
+                if (!lookupRows.TryGetValue(groupEntry.Key, out object[] lookupValues))
+                    continue;
 
+                result.Add(new object[]
+                {
+                    groupEntry.Key,
+                    groupEntry.Value[0],
+                    groupEntry.Value[1],
+                    lookupValues[0],
+                    lookupValues[1]
+                });
+            }
+
+            currentNode.Result = result.ToArray();
             return NodeUpdateResult.Success;
+        }
+
+        static Dictionary<string, object[]> BuildFirstMatchMap(object[][] rows, int keyColumn, int returnColumn1, int returnColumn2)
+        {
+            Dictionary<string, object[]> result = new Dictionary<string, object[]>();
+
+            foreach (object[] row in rows)
+            {
+                if (row == null || row.Length <= keyColumn)
+                    continue;
+
+                string key = row[keyColumn]?.ToString() ?? "";
+                if (string.IsNullOrWhiteSpace(key) || result.ContainsKey(key))
+                    continue;
+
+                object value1 = row.Length > returnColumn1 ? row[returnColumn1] : null;
+                object value2 = row.Length > returnColumn2 ? row[returnColumn2] : null;
+                result.Add(key, new object[] { value1, value2 });
+            }
+
+            return result;
         }
 
         static bool IsValidColumn(int columnIndex, int maxColumnCount)
         {
             return columnIndex >= 0 && columnIndex < maxColumnCount;
-        }
-
-        static object[][] GetTwoColumnResult(object[][] rows, int matchColumn, string matchValue, int returnColumn1, int returnColumn2)
-        {
-            List<object[]> result = new List<object[]>();
-
-            foreach (object[] row in rows)
-            {
-                if (row == null || row.Length <= matchColumn)
-                    continue;
-
-                string currentValue = row[matchColumn]?.ToString() ?? "";
-                if (currentValue != matchValue)
-                    continue;
-
-                object firstValue = row.Length > returnColumn1 ? row[returnColumn1] : null;
-                object secondValue = row.Length > returnColumn2 ? row[returnColumn2] : null;
-                result.Add(new object[] { firstValue, secondValue });
-            }
-
-            return result.ToArray();
         }
 
         internal new NodeState State
@@ -138,12 +148,6 @@ namespace Atom.BentleyOpenRoads.GenDes
         {
             get { return State.InputDataProperty.GetNativeValue<object[][]>(); }
             set { State.InputDataProperty.SetNativeValueAndInputExpression(value); }
-        }
-
-        public string MatchValue
-        {
-            get { return State.MatchValueProperty.GetNativeValue<string>(); }
-            set { State.MatchValueProperty.SetNativeValueAndInputExpression(value); }
         }
 
         public int GroupColumnIndex
@@ -164,12 +168,6 @@ namespace Atom.BentleyOpenRoads.GenDes
             set { State.GroupReturnColumn2IndexProperty.SetNativeValueAndInputExpression(value); }
         }
 
-        public object[][] GroupedResult
-        {
-            get { return State.GroupedResultProperty.GetNativeValue<object[][]>(); }
-            set { State.GroupedResultProperty.SetNativeValueAndInputExpression(value); }
-        }
-
         public int LookupColumnIndex
         {
             get { return State.LookupColumnIndexProperty.GetNativeValue<int>(); }
@@ -188,52 +186,46 @@ namespace Atom.BentleyOpenRoads.GenDes
             set { State.LookupReturnColumn2IndexProperty.SetNativeValueAndInputExpression(value); }
         }
 
-        public object[][] LookupResult
+        public object[][] Result
         {
-            get { return State.LookupResultProperty.GetNativeValue<object[][]>(); }
-            set { State.LookupResultProperty.SetNativeValueAndInputExpression(value); }
+            get { return State.ResultProperty.GetNativeValue<object[][]>(); }
+            set { State.ResultProperty.SetNativeValueAndInputExpression(value); }
         }
 
         public new class NodeState : UtilityNode.NodeState
         {
             internal readonly UtilityNodeProperty InputDataProperty;
-            internal readonly UtilityNodeProperty MatchValueProperty;
             internal readonly UtilityNodeProperty GroupColumnIndexProperty;
             internal readonly UtilityNodeProperty GroupReturnColumn1IndexProperty;
             internal readonly UtilityNodeProperty GroupReturnColumn2IndexProperty;
-            internal readonly UtilityNodeProperty GroupedResultProperty;
             internal readonly UtilityNodeProperty LookupColumnIndexProperty;
             internal readonly UtilityNodeProperty LookupReturnColumn1IndexProperty;
             internal readonly UtilityNodeProperty LookupReturnColumn2IndexProperty;
-            internal readonly UtilityNodeProperty LookupResultProperty;
+            internal readonly UtilityNodeProperty ResultProperty;
 
             internal protected NodeState(GroupAndLookupByValue parentNode, NodeTechniqueDetermination initialActiveTechniqueDetermination) :
                 base(parentNode, initialActiveTechniqueDetermination)
             {
                 InputDataProperty = AddProperty(NameOfInputDataProperty);
-                MatchValueProperty = AddProperty(NameOfMatchValueProperty);
                 GroupColumnIndexProperty = AddProperty(NameOfGroupColumnIndexProperty);
                 GroupReturnColumn1IndexProperty = AddProperty(NameOfGroupReturnColumn1IndexProperty);
                 GroupReturnColumn2IndexProperty = AddProperty(NameOfGroupReturnColumn2IndexProperty);
-                GroupedResultProperty = AddProperty(NameOfGroupedResultProperty);
                 LookupColumnIndexProperty = AddProperty(NameOfLookupColumnIndexProperty);
                 LookupReturnColumn1IndexProperty = AddProperty(NameOfLookupReturnColumn1IndexProperty);
                 LookupReturnColumn2IndexProperty = AddProperty(NameOfLookupReturnColumn2IndexProperty);
-                LookupResultProperty = AddProperty(NameOfLookupResultProperty);
+                ResultProperty = AddProperty(NameOfResultProperty);
             }
 
             protected NodeState(NodeState source) : base(source)
             {
                 InputDataProperty = GetProperty(NameOfInputDataProperty);
-                MatchValueProperty = GetProperty(NameOfMatchValueProperty);
                 GroupColumnIndexProperty = GetProperty(NameOfGroupColumnIndexProperty);
                 GroupReturnColumn1IndexProperty = GetProperty(NameOfGroupReturnColumn1IndexProperty);
                 GroupReturnColumn2IndexProperty = GetProperty(NameOfGroupReturnColumn2IndexProperty);
-                GroupedResultProperty = GetProperty(NameOfGroupedResultProperty);
                 LookupColumnIndexProperty = GetProperty(NameOfLookupColumnIndexProperty);
                 LookupReturnColumn1IndexProperty = GetProperty(NameOfLookupReturnColumn1IndexProperty);
                 LookupReturnColumn2IndexProperty = GetProperty(NameOfLookupReturnColumn2IndexProperty);
-                LookupResultProperty = GetProperty(NameOfLookupResultProperty);
+                ResultProperty = GetProperty(NameOfResultProperty);
             }
 
             protected new GroupAndLookupByValue UtilityNode
@@ -248,7 +240,7 @@ namespace Atom.BentleyOpenRoads.GenDes
 
             public override bool TryGetDefaultOutputProperty(out INodeProperty property)
             {
-                property = GroupedResultProperty;
+                property = ResultProperty;
                 return true;
             }
         }

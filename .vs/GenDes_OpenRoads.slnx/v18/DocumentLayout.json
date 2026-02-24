@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "C:\\Repos\\GC_OpenRoads\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{ED5F0EEF-951F-4609-8CC6-DE6F21F83E8E}|GenDes.Lists\\GenDes.Lists.csproj|c:\\repos\\gc_openroads\\gendes.lists\\src\\nodes\\groupandlookupbyvalue.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ED5F0EEF-951F-4609-8CC6-DE6F21F83E8E}|GenDes.Lists\\GenDes.Lists.csproj|solutionrelative:gendes.lists\\src\\nodes\\groupandlookupbyvalue.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED5F0EEF-951F-4609-8CC6-DE6F21F83E8E}|GenDes.Lists\\GenDes.Lists.csproj|C:\\Repos\\GC_OpenRoads\\gendes.lists\\src\\nodes\\groupby.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ED5F0EEF-951F-4609-8CC6-DE6F21F83E8E}|GenDes.Lists\\GenDes.Lists.csproj|solutionrelative:gendes.lists\\src\\nodes\\groupby.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{092EC152-3FB6-4F9A-8D33-7D7FD68E0A0F}|GenDesItemTypes\\GenDes.ItemTypes.csproj|c:\\repos\\gc_openroads\\gendesitemtypes\\src\\nodes\\itemtypes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{092EC152-3FB6-4F9A-8D33-7D7FD68E0A0F}|GenDesItemTypes\\GenDes.ItemTypes.csproj|solutionrelative:gendesitemtypes\\src\\nodes\\itemtypes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{092EC152-3FB6-4F9A-8D33-7D7FD68E0A0F}|GenDesItemTypes\\GenDes.ItemTypes.csproj|C:\\Repos\\GC_OpenRoads\\gendesitemtypes\\src\\utilities\\elementextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{092EC152-3FB6-4F9A-8D33-7D7FD68E0A0F}|GenDesItemTypes\\GenDes.ItemTypes.csproj|solutionrelative:gendesitemtypes\\src\\utilities\\elementextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{ED5F0EEF-951F-4609-8CC6-DE6F21F83E8E}|GenDes.Lists\\GenDes.Lists.csproj|C:\\Repos\\GC_OpenRoads\\gendes.lists\\src\\nodes\\groupby.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{ED5F0EEF-951F-4609-8CC6-DE6F21F83E8E}|GenDes.Lists\\GenDes.Lists.csproj|solutionrelative:gendes.lists\\src\\nodes\\groupby.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FF6C1A36-B948-45AA-A209-3C049F69BDDF}|GenDes.Excel\\GenDes.Excel.csproj|C:\\Repos\\GC_OpenRoads\\gendes.excel\\src\\nodes\\gendesexcelnode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -41,27 +45,28 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "GroupAndLookupByValue.cs",
+              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GenDes.Lists\\src\\Nodes\\GroupAndLookupByValue.cs",
+              "RelativeDocumentMoniker": "GenDes.Lists\\src\\Nodes\\GroupAndLookupByValue.cs",
+              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GenDes.Lists\\src\\Nodes\\GroupAndLookupByValue.cs",
+              "RelativeToolTip": "GenDes.Lists\\src\\Nodes\\GroupAndLookupByValue.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAABgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-24T16:20:39.581Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ElementExtensions.cs",
-              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GenDesItemTypes\\src\\Utilities\\ElementExtensions.cs",
-              "RelativeDocumentMoniker": "GenDesItemTypes\\src\\Utilities\\ElementExtensions.cs",
-              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GenDesItemTypes\\src\\Utilities\\ElementExtensions.cs",
-              "RelativeToolTip": "GenDesItemTypes\\src\\Utilities\\ElementExtensions.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-24T12:49:27.17Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "JSON.cs",
               "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GenDes.JSON\\src\\Nodes\\JSON.cs",
               "RelativeDocumentMoniker": "GenDes.JSON\\src\\Nodes\\JSON.cs",
@@ -73,7 +78,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "GenDesExcelNode.cs",
               "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GenDes.Excel\\src\\Nodes\\GenDesExcelNode.cs",
               "RelativeDocumentMoniker": "GenDes.Excel\\src\\Nodes\\GenDesExcelNode.cs",
@@ -85,7 +90,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "ItemTypes.cs",
               "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GenDesItemTypes\\src\\Nodes\\ItemTypes.cs",
               "RelativeDocumentMoniker": "GenDesItemTypes\\src\\Nodes\\ItemTypes.cs",
@@ -98,7 +103,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "SplitList.cs",
               "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GenDes.Lists\\src\\Nodes\\SplitList.cs",
               "RelativeDocumentMoniker": "GenDes.Lists\\src\\Nodes\\SplitList.cs",
@@ -110,7 +115,32 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
+              "Title": "GroupBy.cs",
+              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GenDes.Lists\\src\\Nodes\\GroupBy.cs",
+              "RelativeDocumentMoniker": "GenDes.Lists\\src\\Nodes\\GroupBy.cs",
+              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GenDes.Lists\\src\\Nodes\\GroupBy.cs",
+              "RelativeToolTip": "GenDes.Lists\\src\\Nodes\\GroupBy.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-24T12:47:15.042Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ElementExtensions.cs",
+              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GenDesItemTypes\\src\\Utilities\\ElementExtensions.cs",
+              "RelativeDocumentMoniker": "GenDesItemTypes\\src\\Utilities\\ElementExtensions.cs",
+              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GenDesItemTypes\\src\\Utilities\\ElementExtensions.cs",
+              "RelativeToolTip": "GenDesItemTypes\\src\\Utilities\\ElementExtensions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-24T12:49:27.17Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "ListFilter.cs",
               "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GenDes.Lists\\src\\Nodes\\ListFilter.cs",
               "RelativeDocumentMoniker": "GenDes.Lists\\src\\Nodes\\ListFilter.cs",
@@ -122,19 +152,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "GroupBy.cs",
-              "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GenDes.Lists\\src\\Nodes\\GroupBy.cs",
-              "RelativeDocumentMoniker": "GenDes.Lists\\src\\Nodes\\GroupBy.cs",
-              "ToolTip": "C:\\Repos\\GC_OpenRoads\\GenDes.Lists\\src\\Nodes\\GroupBy.cs",
-              "RelativeToolTip": "GenDes.Lists\\src\\Nodes\\GroupBy.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-24T12:47:15.042Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "GenDes.Excel",
               "DocumentMoniker": "C:\\Repos\\GC_OpenRoads\\GenDes.Excel\\GenDes.Excel.csproj",
               "RelativeDocumentMoniker": "GenDes.Excel\\GenDes.Excel.csproj",
