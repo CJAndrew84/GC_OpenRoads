@@ -21,9 +21,11 @@ namespace GenDes.Lists
         internal const string NameOfGroupColumnIndexProperty = "GroupColumnIndex";
         internal const string NameOfGroupReturnColumn1IndexProperty = "GroupReturnColumn1Index";
         internal const string NameOfGroupReturnColumn2IndexProperty = "GroupReturnColumn2Index";
+        internal const string NameOfGroupReturnColumn3IndexProperty = "GroupReturnColumn3Index";
         internal const string NameOfLookupColumnIndexProperty = "LookupColumnIndex";
         internal const string NameOfLookupReturnColumn1IndexProperty = "LookupReturnColumn1Index";
         internal const string NameOfLookupReturnColumn2IndexProperty = "LookupReturnColumn2Index";
+        internal const string NameOfLookupReturnColumn3IndexProperty = "LookupReturnColumn3Index";
         internal const string NameOfResultProperty = "Result";
 
         static readonly NodeGCType s_gcTypeOfAllInstances = (NodeGCType)GCTypeTools.GetGCType(UniversalGCEnvironment.TheOnlyInstance, typeof(GroupAndLookupByValue));
@@ -46,6 +48,8 @@ namespace GenDes.Lists
                 Ls.Literal("First grouped column index to return."));
             technique1.AddParameter(environment, NameOfGroupReturnColumn2IndexProperty, typeof(int), null,
                 Ls.Literal("Second grouped column index to return."));
+            technique1.AddParameter(environment, NameOfGroupReturnColumn3IndexProperty, typeof(int), null,
+                Ls.Literal("Third grouped column index to return."));
 
             technique1.AddParameter(environment, NameOfLookupColumnIndexProperty, typeof(int), null,
                 Ls.Literal("Column index to lookup the same key value."));
@@ -53,9 +57,11 @@ namespace GenDes.Lists
                 Ls.Literal("First lookup column index to return."));
             technique1.AddParameter(environment, NameOfLookupReturnColumn2IndexProperty, typeof(int), null,
                 Ls.Literal("Second lookup column index to return."));
+            technique1.AddParameter(environment, NameOfLookupReturnColumn3IndexProperty, typeof(int), null,
+                Ls.Literal("Third lookup column index to return."));
 
             technique1.AddParameter(environment, NameOfResultProperty, typeof(object[][]), null,
-                Ls.Literal("Rows with 5 values: [LookupValue, GroupCol1, GroupCol2, LookupCol1, LookupCol2]."), NodePortRole.TechniqueOutputOnly);
+                Ls.Literal("Rows with 7 values: [LookupValue, GroupCol1, GroupCol2, GroupCol3, LookupCol1, LookupCol2, LookupCol3]."), NodePortRole.TechniqueOutputOnly);
         }
 
         static NodeUpdateResult DefaultTechnique(UtilityNode node, NodeUpdateContext updateContext)
@@ -76,17 +82,21 @@ namespace GenDes.Lists
                 return new NodeUpdateResult.TechniqueInvalidArguments(NameOfGroupReturnColumn1IndexProperty + " Error - index is out of range");
             if (!IsValidColumn(currentNode.GroupReturnColumn2Index, maxColumnCount))
                 return new NodeUpdateResult.TechniqueInvalidArguments(NameOfGroupReturnColumn2IndexProperty + " Error - index is out of range");
+            if (!IsValidColumn(currentNode.GroupReturnColumn3Index, maxColumnCount))
+                return new NodeUpdateResult.TechniqueInvalidArguments(NameOfGroupReturnColumn3IndexProperty + " Error - index is out of range");
             if (!IsValidColumn(currentNode.LookupColumnIndex, maxColumnCount))
                 return new NodeUpdateResult.TechniqueInvalidArguments(NameOfLookupColumnIndexProperty + " Error - index is out of range");
             if (!IsValidColumn(currentNode.LookupReturnColumn1Index, maxColumnCount))
                 return new NodeUpdateResult.TechniqueInvalidArguments(NameOfLookupReturnColumn1IndexProperty + " Error - index is out of range");
             if (!IsValidColumn(currentNode.LookupReturnColumn2Index, maxColumnCount))
                 return new NodeUpdateResult.TechniqueInvalidArguments(NameOfLookupReturnColumn2IndexProperty + " Error - index is out of range");
+            if (!IsValidColumn(currentNode.LookupReturnColumn3Index, maxColumnCount))
+                return new NodeUpdateResult.TechniqueInvalidArguments(NameOfLookupReturnColumn3IndexProperty + " Error - index is out of range");
 
             Dictionary<string, object[]> groupedRows = BuildFirstMatchMap(inputData, currentNode.GroupColumnIndex,
-                currentNode.GroupReturnColumn1Index, currentNode.GroupReturnColumn2Index);
+                currentNode.GroupReturnColumn1Index, currentNode.GroupReturnColumn2Index, currentNode.GroupReturnColumn3Index);
             Dictionary<string, object[]> lookupRows = BuildFirstMatchMap(inputData, currentNode.LookupColumnIndex,
-                currentNode.LookupReturnColumn1Index, currentNode.LookupReturnColumn2Index);
+                currentNode.LookupReturnColumn1Index, currentNode.LookupReturnColumn2Index, currentNode.LookupReturnColumn3Index);
 
             List<object[]> result = new List<object[]>();
             foreach (KeyValuePair<string, object[]> groupEntry in groupedRows)
@@ -99,8 +109,10 @@ namespace GenDes.Lists
                     groupEntry.Key,
                     groupEntry.Value[0],
                     groupEntry.Value[1],
+                    groupEntry.Value[2],
                     lookupValues[0],
-                    lookupValues[1]
+                    lookupValues[1],
+                    lookupValues[2]
                 });
             }
 
@@ -108,7 +120,7 @@ namespace GenDes.Lists
             return NodeUpdateResult.Success;
         }
 
-        static Dictionary<string, object[]> BuildFirstMatchMap(object[][] rows, int keyColumn, int returnColumn1, int returnColumn2)
+        static Dictionary<string, object[]> BuildFirstMatchMap(object[][] rows, int keyColumn, int returnColumn1, int returnColumn2, int returnColumn3)
         {
             Dictionary<string, object[]> result = new Dictionary<string, object[]>();
 
@@ -123,7 +135,8 @@ namespace GenDes.Lists
 
                 object value1 = row.Length > returnColumn1 ? row[returnColumn1] : null;
                 object value2 = row.Length > returnColumn2 ? row[returnColumn2] : null;
-                result.Add(key, new object[] { value1, value2 });
+                object value3 = row.Length > returnColumn3 ? row[returnColumn3] : null;
+                result.Add(key, new object[] { value1, value2, value3 });
             }
 
             return result;
@@ -168,6 +181,12 @@ namespace GenDes.Lists
             set { State.GroupReturnColumn2IndexProperty.SetNativeValueAndInputExpression(value); }
         }
 
+        public int GroupReturnColumn3Index
+        {
+            get { return State.GroupReturnColumn3IndexProperty.GetNativeValue<int>(); }
+            set { State.GroupReturnColumn3IndexProperty.SetNativeValueAndInputExpression(value); }
+        }
+
         public int LookupColumnIndex
         {
             get { return State.LookupColumnIndexProperty.GetNativeValue<int>(); }
@@ -186,6 +205,12 @@ namespace GenDes.Lists
             set { State.LookupReturnColumn2IndexProperty.SetNativeValueAndInputExpression(value); }
         }
 
+        public int LookupReturnColumn3Index
+        {
+            get { return State.LookupReturnColumn3IndexProperty.GetNativeValue<int>(); }
+            set { State.LookupReturnColumn3IndexProperty.SetNativeValueAndInputExpression(value); }
+        }
+
         public object[][] Result
         {
             get { return State.ResultProperty.GetNativeValue<object[][]>(); }
@@ -198,9 +223,11 @@ namespace GenDes.Lists
             internal readonly UtilityNodeProperty GroupColumnIndexProperty;
             internal readonly UtilityNodeProperty GroupReturnColumn1IndexProperty;
             internal readonly UtilityNodeProperty GroupReturnColumn2IndexProperty;
+            internal readonly UtilityNodeProperty GroupReturnColumn3IndexProperty;
             internal readonly UtilityNodeProperty LookupColumnIndexProperty;
             internal readonly UtilityNodeProperty LookupReturnColumn1IndexProperty;
             internal readonly UtilityNodeProperty LookupReturnColumn2IndexProperty;
+            internal readonly UtilityNodeProperty LookupReturnColumn3IndexProperty;
             internal readonly UtilityNodeProperty ResultProperty;
 
             internal protected NodeState(GroupAndLookupByValue parentNode, NodeTechniqueDetermination initialActiveTechniqueDetermination) :
@@ -210,9 +237,11 @@ namespace GenDes.Lists
                 GroupColumnIndexProperty = AddProperty(NameOfGroupColumnIndexProperty);
                 GroupReturnColumn1IndexProperty = AddProperty(NameOfGroupReturnColumn1IndexProperty);
                 GroupReturnColumn2IndexProperty = AddProperty(NameOfGroupReturnColumn2IndexProperty);
+                GroupReturnColumn3IndexProperty = AddProperty(NameOfGroupReturnColumn3IndexProperty);
                 LookupColumnIndexProperty = AddProperty(NameOfLookupColumnIndexProperty);
                 LookupReturnColumn1IndexProperty = AddProperty(NameOfLookupReturnColumn1IndexProperty);
                 LookupReturnColumn2IndexProperty = AddProperty(NameOfLookupReturnColumn2IndexProperty);
+                LookupReturnColumn3IndexProperty = AddProperty(NameOfLookupReturnColumn3IndexProperty);
                 ResultProperty = AddProperty(NameOfResultProperty);
             }
 
@@ -222,9 +251,11 @@ namespace GenDes.Lists
                 GroupColumnIndexProperty = GetProperty(NameOfGroupColumnIndexProperty);
                 GroupReturnColumn1IndexProperty = GetProperty(NameOfGroupReturnColumn1IndexProperty);
                 GroupReturnColumn2IndexProperty = GetProperty(NameOfGroupReturnColumn2IndexProperty);
+                GroupReturnColumn3IndexProperty = GetProperty(NameOfGroupReturnColumn3IndexProperty);
                 LookupColumnIndexProperty = GetProperty(NameOfLookupColumnIndexProperty);
                 LookupReturnColumn1IndexProperty = GetProperty(NameOfLookupReturnColumn1IndexProperty);
                 LookupReturnColumn2IndexProperty = GetProperty(NameOfLookupReturnColumn2IndexProperty);
+                LookupReturnColumn3IndexProperty = GetProperty(NameOfLookupReturnColumn3IndexProperty);
                 ResultProperty = GetProperty(NameOfResultProperty);
             }
 
