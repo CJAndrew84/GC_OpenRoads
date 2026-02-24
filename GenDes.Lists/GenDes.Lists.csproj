@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Nodes\GroupBy.cs" />
+    <Compile Include="src\Nodes\GroupAndLookupByValue.cs" />
     <Compile Include="src\Nodes\ListFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Nodes\SplitList.cs" />
