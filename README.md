@@ -131,6 +131,7 @@ See `GenDes.OpenRoads/SampleGraphs/CivilAlignmentAndProfileSamples.json` for min
 - `ListFilter`: apply bool-mask filtering to string arrays.
 - `SplitList`: split any list at index.
 - `GroupBy`: group 2D table rows by a selected column.
+- `GroupAndLookupByValue`: join grouped + lookup values by shared key (fixed and dynamic techniques).
 
 ### Item Types
 - Inspect Item Type definitions from active DGN.
@@ -227,6 +228,7 @@ Use only the parts you need in a given graph.
 | `ListFilter` | {Gen:Des} Lists | Filter `string[]` with `bool[]` mask |
 | `SplitList` | {Gen:Des} Lists | Split list at index |
 | `GroupBy` | {Gen:Des} Lists | Group 2D rows by selected column |
+| `GroupAndLookupByValue` | {Gen:Des} Lists | Match grouped and lookup return columns by key (`Default` fixed 3+3, `Dynamic` configurable count) |
 
 ### {Gen:Des} Item Types
 
